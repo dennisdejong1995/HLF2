@@ -1,2 +1,1 @@
 Installed chaincodes on peer:
-Package ID: paper_1:49516d79c67ac0b9f9ee1846142e01588d2f045588d46d035ae8a82ecf74f41a, Label: paper_1

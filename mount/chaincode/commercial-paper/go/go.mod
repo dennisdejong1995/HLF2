@@ -1,10 +1,11 @@
-module github.com/hyperledger/fabric-samples/commercial-paper/organization/digibank/contract-go
+module commercial-paper
 
 go 1.13
 
 require (
 	github.com/go-openapi/jsonreference v0.19.3 // indirect
 	github.com/hyperledger/fabric-contract-api-go v1.1.0
+	github.com/hyperledger/fabric-samples/commercial-paper/organization/digibank/contract-go v0.0.0-20201012202717-e7189fc62a50
 	github.com/mailru/easyjson v0.7.0 // indirect
 	github.com/stretchr/testify v1.5.1
 	golang.org/x/net v0.0.0-20191028085509-fe3aa8a45271 // indirect

@@ -85,17 +85,17 @@ func (s *SmartContract) Init(ctx contractapi.TransactionContextInterface) error 
 	return nil
 }
 
-func (s *SmartContract) Issue(ctx contractapi.TransactionContextInterface, a *Asset) error {
-	// Create offer
-}
+// func (s *SmartContract) Issue(ctx contractapi.TransactionContextInterface, a *Asset) error {
+// 	// Create offer
+// }
 
-func (s *SmartContract) Accept(ctx contractapi.TransactionContextInterface, assetNumber string) error {
-	// Accept offer
-}
+// func (s *SmartContract) Accept(ctx contractapi.TransactionContextInterface, assetNumber string) error {
+// 	// Accept offer
+// }
 
-func (s *SmartContract) Amortize(ctx contractapi.TransactionContextInterface, assetNumber string, value int) error {
-	// Pay of debt as a whole or partially
-}
+// func (s *SmartContract) Amortize(ctx contractapi.TransactionContextInterface, assetNumber string, value int) error {
+// 	// Pay of debt as a whole or partially
+// }
 
 
 func main() {
