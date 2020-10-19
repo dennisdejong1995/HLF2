@@ -13,7 +13,7 @@ echo "Generating genesis block"
 sudo ./generatecryptos.sh "$HLF_PATH"
 
 echo "Putting network up"
-sudo ./networkup.sh "$HLF_PATH"
+sudo ./networkupwithcouchdb.sh "$HLF_PATH"
 
 echo "Creating channel"
 sudo ./createchannel.sh "$HLF_PATH"
