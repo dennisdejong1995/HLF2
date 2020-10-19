@@ -1,5 +1,7 @@
 #!/bin/bash
 
+c_flag=false
+
 while getopts ":iqp:c:" opt; do
   case ${opt} in
     i )
@@ -16,6 +18,7 @@ while getopts ":iqp:c:" opt; do
     c )
       echo "$OPTARG"
       JSON_COMMAND='{"Args":["Instantiate"]}'
+      c_flag=true
       ;;
     \? )
       echo "Invalid Option: -$OPTARG" 1>&2
@@ -28,6 +31,10 @@ while getopts ":iqp:c:" opt; do
   esac
 done
 
+if ! $c_flag; then
+    echo "No command specified"
+    exit 1
+fi
 
 pushd "$HLF_PATH"/mount/network || exit
 export FABRIC_CFG_PATH=$PWD/../config
