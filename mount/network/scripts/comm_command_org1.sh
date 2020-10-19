@@ -1,6 +1,6 @@
 #!/bin/bash
 
-while getopts ":iqp:" opt; do
+while getopts ":iqp:c:" opt; do
   case ${opt} in
     i )
       echo "Flag -i used"
@@ -12,6 +12,10 @@ while getopts ":iqp:" opt; do
       ;;
     p )
       HLF_PATH=$OPTARG
+      ;;
+    c )
+      echo "$OPTARG"
+      JSON_COMMAND='{"Args":["Instantiate"]}'
       ;;
     \? )
       echo "Invalid Option: -$OPTARG" 1>&2
@@ -39,6 +43,13 @@ PEER2="localhost:9051"
 P2_CERT="${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt"
 CHANNEL="channel1"
 CHAINCODE="paper"
-peer chaincode "$COMM_TYPE" -o "$ORDERER" --ordererTLSHostnameOverride "$ORDERER_HOSTNAME" --tls --cafile "$CA_FILE" -C "$CHANNEL" -n "$CHAINCODE" --peerAddresses "$PEER1" --tlsRootCertFiles "$P1_CERT" --peerAddresses "$PEER2" --tlsRootCertFiles "$P2_CERT" -c '{"Args":["Instantiate"]}'
+
+if [[ "$COMM_TYPE" == "query" ]]; then
+  echo "Not supported yet"
+  exit 0
+  peer chaincode "$COMM_TYPE" -o "$ORDERER" --ordererTLSHostnameOverride "$ORDERER_HOSTNAME" --tls --cafile "$CA_FILE" -C "$CHANNEL" -n "$CHAINCODE" --peerAddresses "$PEER1" --tlsRootCertFiles "$P1_CERT" --peerAddresses "$PEER2" --tlsRootCertFiles "$P2_CERT" -c '{"Args":["Instantiate"]}'
+elif [[ "$COMM_TYPE" == "invoke" ]]; then
+  peer chaincode "$COMM_TYPE" -o "$ORDERER" --ordererTLSHostnameOverride "$ORDERER_HOSTNAME" --tls --cafile "$CA_FILE" -C "$CHANNEL" -n "$CHAINCODE" --peerAddresses "$PEER1" --tlsRootCertFiles "$P1_CERT" --peerAddresses "$PEER2" --tlsRootCertFiles "$P2_CERT" -c "$JSON_COMMAND"
+fi
 
 popd || exit
