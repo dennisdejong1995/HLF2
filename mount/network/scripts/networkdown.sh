@@ -1,6 +1,8 @@
 #!/bin/bash
 
-pushd ~/mount/network/docker
+HLF_PATH=$1
+
+pushd "$HLF_PATH"/mount/network/docker
 
 docker-compose -f ./docker-compose-test-net.yaml down
 docker-compose -f ./docker-compose-ca.yaml down

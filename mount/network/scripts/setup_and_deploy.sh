@@ -4,13 +4,13 @@ HLF_PATH=$1
 DEPLOY_SCRIPT=$2
 
 echo "Generating genesis block"
-./generatecryptos.sh "$HLF_PATH"
+sudo ./generatecryptos.sh "$HLF_PATH"
 
 echo "Putting network up"
-./networkup.sh "$HLF_PATH"
+sudo ./networkup.sh "$HLF_PATH"
 
 echo "Creating channel"
-./createchannel.sh "$HLF_PATH"
+sudo ./createchannel.sh "$HLF_PATH"
 
 echo "Deploying chaincode"
-./"$DEPLOY_SCRIPT" "$HLF_PATH"
+sudo ./"$DEPLOY_SCRIPT" "$HLF_PATH"
