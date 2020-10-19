@@ -5,11 +5,9 @@ c_flag=false
 while getopts ":iqp:c:" opt; do
   case ${opt} in
     i )
-      echo "Flag -i used"
       COMM_TYPE="invoke"
       ;;
     q )
-      echo "Flag -q used"
       COMM_TYPE="query"
       ;;
     p )
@@ -17,7 +15,7 @@ while getopts ":iqp:c:" opt; do
       ;;
     c )
       echo "$OPTARG"
-      JSON_COMMAND='{"Args":["Instantiate"]}'
+      JSON_COMMAND="$OPTARG"
       c_flag=true
       ;;
     \? )
