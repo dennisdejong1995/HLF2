@@ -5,7 +5,7 @@ if [[ $# -ne 1 ]] ; then
     exit 1
 fi
 
-while getopts ":iq" opt; do
+while getopts ":iqp:" opt; do
   case ${opt} in
     i )
       echo "Flag -i used"
@@ -15,6 +15,9 @@ while getopts ":iq" opt; do
       echo "Flag -q used"
       COMM_TYPE="query"
       ;;
+    p )
+      HLF_PATH=$OPTARG
+      ;;
     \? )
       echo "Invalid Option: -$OPTARG" 1>&2
       exit 1
@@ -22,7 +25,6 @@ while getopts ":iq" opt; do
   esac
 done
 
-HLF_PATH=$1
 
 pushd "$HLF_PATH"/mount/network || exit
 
