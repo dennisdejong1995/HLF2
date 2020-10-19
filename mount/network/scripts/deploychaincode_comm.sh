@@ -1,8 +1,9 @@
 #!/bin/bash
 
+HLF_PATH=$1
 
 # go to the chaincode location
-pushd ~/mount/chaincode/commercial-paper/go
+pushd "$HLF_PATH"/mount/chaincode/commercial-paper/go
 
 # add the dependencies
 go mod vendor
@@ -11,7 +12,7 @@ popd
 
 
 # return to the network folder
-pushd ~/mount/network
+pushd "$HLF_PATH"/mount/network
 
 # set cfg path
 export FABRIC_CFG_PATH=$PWD/../config
