@@ -14,7 +14,9 @@ sudo ./generatecryptos.sh "$HLF_PATH"
 
 echo "Putting network up"
 sudo ./networkupwithcouchdb.sh "$HLF_PATH"
-sleep 10
+
+echo "Press return to continue"
+read -r
 
 echo "Creating channel"
 sudo ./createchannel.sh "$HLF_PATH"
