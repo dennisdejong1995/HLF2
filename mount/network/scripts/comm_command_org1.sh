@@ -1,10 +1,5 @@
 #!/bin/bash
 
-if [[ $# -ne 1 ]] ; then
-    echo 'Please supply a path to the network'
-    exit 1
-fi
-
 while getopts ":iqp:" opt; do
   case ${opt} in
     i )
