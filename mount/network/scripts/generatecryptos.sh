@@ -1,11 +1,13 @@
 #!/bin/bash
 
-# remove the old materials
-sudo rm -fr ~/mount/network/organizations/ordererOrganizations/*
-sudo rm -fr ~/mount/network/organizations/peerOrganizations/*
-sudo rm -fr ~/mount/network/system-genesis-block/*
+HLF_PATH=$1
 
-pushd ~/mount/network
+# remove the old materials
+sudo rm -fr "$HLF_PATH"/mount/network/organizations/ordererOrganizations/*
+sudo rm -fr "$HLF_PATH"/mount/network/organizations/peerOrganizations/*
+sudo rm -fr "$HLF_PATH"/mount/network/system-genesis-block/*
+
+pushd "$HLF_PATH"/mount/network
 
 # generate crypto materials
 cryptogen generate --config=./organizations/cryptogen/crypto-config-org1.yaml --output="organizations"
