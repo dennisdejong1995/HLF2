@@ -1,9 +1,11 @@
 #!/bin/bash
 
-# create channel artifacts folder
-mkdir ~/mount/network/channel-artifacts
+HLF_PATH=$1
 
-pushd ~/mount/network
+# create channel artifacts folder
+mkdir "$HLF_PATH"/mount/network/channel-artifacts
+
+pushd "$HLF_PATH"/mount/network
 
 # set the cfg path
 export FABRIC_CFG_PATH=$PWD/configtx/
