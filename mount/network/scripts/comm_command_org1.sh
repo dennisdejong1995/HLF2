@@ -21,6 +21,10 @@ while getopts ":iqp:c:" opt; do
       echo "Invalid Option: -$OPTARG" 1>&2
       exit 1
       ;;
+    : )
+      echo "Invalid Option: -$OPTARG requires an argument" 1>&2
+      exit 1
+      ;;
   esac
 done
 
@@ -45,7 +49,7 @@ CHANNEL="channel1"
 CHAINCODE="paper"
 
 if [[ "$COMM_TYPE" == "query" ]]; then
-  echo "Not supported yet"
+  echo "Query not supported yet"
   exit 0
   peer chaincode "$COMM_TYPE" -o "$ORDERER" --ordererTLSHostnameOverride "$ORDERER_HOSTNAME" --tls --cafile "$CA_FILE" -C "$CHANNEL" -n "$CHAINCODE" --peerAddresses "$PEER1" --tlsRootCertFiles "$P1_CERT" --peerAddresses "$PEER2" --tlsRootCertFiles "$P2_CERT" -c '{"Args":["Instantiate"]}'
 elif [[ "$COMM_TYPE" == "invoke" ]]; then
