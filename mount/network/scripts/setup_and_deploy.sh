@@ -8,6 +8,8 @@ fi
 HLF_PATH=$1
 DEPLOY_SCRIPT=$2
 
+echo "Putting network down if up"
+sudo ./networkdown.sh "$HLF_PATH"
 
 echo "Generating genesis block"
 sudo ./generatecryptos.sh "$HLF_PATH"
