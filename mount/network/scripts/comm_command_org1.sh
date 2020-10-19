@@ -54,9 +54,7 @@ CHANNEL="channel1"
 CHAINCODE="paper"
 
 if [[ "$COMM_TYPE" == "query" ]]; then
-  echo "Query not supported yet"
-  exit 0
-  peer chaincode "$COMM_TYPE" -o "$ORDERER" --ordererTLSHostnameOverride "$ORDERER_HOSTNAME" --tls --cafile "$CA_FILE" -C "$CHANNEL" -n "$CHAINCODE" --peerAddresses "$PEER1" --tlsRootCertFiles "$P1_CERT" --peerAddresses "$PEER2" --tlsRootCertFiles "$P2_CERT" -c '{"Args":["Instantiate"]}'
+  peer chaincode query -C channel1 -n paper -c '{"Args":["GetPaper", "Dealblock", "00001"]}'
 elif [[ "$COMM_TYPE" == "invoke" ]]; then
   peer chaincode "$COMM_TYPE" -o "$ORDERER" --ordererTLSHostnameOverride "$ORDERER_HOSTNAME" --tls --cafile "$CA_FILE" -C "$CHANNEL" -n "$CHAINCODE" --peerAddresses "$PEER1" --tlsRootCertFiles "$P1_CERT" --peerAddresses "$PEER2" --tlsRootCertFiles "$P2_CERT" -c "$JSON_COMMAND"
 fi
