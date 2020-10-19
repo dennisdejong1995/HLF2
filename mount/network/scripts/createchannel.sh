@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [[ $# -ne 1 ]] ; then
+    echo 'Please supply a path to the network'
+    exit 1
+fi
+
 HLF_PATH=$1
 
 # create channel artifacts folder

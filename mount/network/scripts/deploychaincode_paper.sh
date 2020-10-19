@@ -1,9 +1,5 @@
 #!/bin/bash
 
-if [[ $# -ne 1 ]] ; then
-    echo 'Please supply a path to the network'
-    exit 1
-fi
 
 # go to the chaincode location
 pushd ~/mount/chaincode/paper/go
