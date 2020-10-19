@@ -22,7 +22,7 @@ done
 
 
 pushd "$HLF_PATH"/mount/network || exit
-
+export FABRIC_CFG_PATH=$PWD/../config
 export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_LOCALMSPID="Org1MSP"
 export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
