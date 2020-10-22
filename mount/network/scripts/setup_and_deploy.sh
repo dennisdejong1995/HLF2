@@ -7,6 +7,8 @@ fi
 
 HLF_PATH=$1
 DEPLOY_SCRIPT=$2
+echo "Pulling repository"
+sudo git fetch && git stash && git pull
 
 echo "Putting network down if up"
 sudo ./networkdown.sh "$HLF_PATH"
