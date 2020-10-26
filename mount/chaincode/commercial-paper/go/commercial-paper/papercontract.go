@@ -20,14 +20,16 @@ type Contract struct {
 // Instantiate does nothing
 func (c *Contract) Instantiate() {
 	fmt.Println("Instantiated")
+	fmt.Println("Using local package")
+
 }
 
 // Issue creates a new commercial paper and stores it in the world state
 func (c *Contract) Issue(ctx TransactionContextInterface, issuer string, paperNumber string, issueDateTime string, maturityDateTime string, faceValue int) (*CommercialPaper, error) {
 	paper := CommercialPaper{PaperNumber: paperNumber, Issuer: issuer, IssueDateTime: issueDateTime, FaceValue: faceValue, MaturityDateTime: maturityDateTime, Owner: issuer}
 	paper.SetIssued()
-
 	err := ctx.GetPaperList().AddPaper(&paper)
+	fmt.Println("Using local package")
 
 	if err != nil {
 		return nil, err
