@@ -8,7 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	ledgerapi "github.com/hyperledger/fabric-samples/commercial-paper/organization/digibank/contract-go/ledger-api"
+	ledgerapi "../ledger-api"
 )
 
 // State enum for commercial paper state property
