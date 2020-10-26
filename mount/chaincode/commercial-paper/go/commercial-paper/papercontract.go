@@ -68,7 +68,7 @@ func (c *Contract) Buy(ctx TransactionContextInterface, issuer string, paperNumb
 }
 
 // Redeem updates a commercial paper status to be redeemed
-func (c *Contract) Redeem(ctx TransactionContextInterface, issuer string, paperNumber string, redeemingOwner string, redeenDateTime string) (*CommercialPaper, error) {
+func (c *Contract) Redeem(ctx TransactionContextInterface, issuer string, paperNumber string, redeemingOwner string, redeemDateTime string) (*CommercialPaper, error) {
 	paper, err := ctx.GetPaperList().GetPaper(issuer, paperNumber)
 
 	if err != nil {

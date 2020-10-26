@@ -7,8 +7,8 @@ package main
 import (
 	"fmt"
 
+	"./commercial-paper"
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
-	"github.com/hyperledger/fabric-samples/commercial-paper/organization/digibank/contract-go/commercial-paper"
 )
 
 func main() {
