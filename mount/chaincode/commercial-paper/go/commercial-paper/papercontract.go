@@ -95,7 +95,7 @@ func (c *Contract) Redeem(ctx TransactionContextInterface, issuer string, paperN
 	return paper, nil
 }
 
-func (c Contract) GetOne(ctx TransactionContextInterface, issuer string, paperNumber string) (*CommercialPaper, error) {
+func (c *Contract) GetOne(ctx TransactionContextInterface, issuer string, paperNumber string) (*CommercialPaper, error) {
 	paper, err := ctx.GetPaperList().GetPaper(issuer, paperNumber)
 
 	if err != nil {
