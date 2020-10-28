@@ -11,6 +11,7 @@ HLF_PATH=$1
 pushd "$HLF_PATH"/mount/chaincode/commercial-paper/go
 
 # add the dependencies
+echp "Adding dependencies"
 go mod vendor
 
 popd
@@ -23,9 +24,11 @@ pushd "$HLF_PATH"/mount/network
 export FABRIC_CFG_PATH=$PWD/../config
 
 # package the chaincode
+echo "Packaging chaincode"
 peer lifecycle chaincode package paper.tar.gz --path ../chaincode/commercial-paper/go --lang golang --label paper_1
 
 # Set environment to Org1
+echo "Setting environment to Org1"
 export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_LOCALMSPID="Org1MSP"
 export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
@@ -33,9 +36,11 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.examp
 export CORE_PEER_ADDRESS=localhost:7051
 
 # Install the chaincode
+echo "Installing chaincode for Org1"
 peer lifecycle chaincode install paper.tar.gz
 
 # Set environment to Org2
+echo "Setting environment to Org2"
 export CORE_PEER_LOCALMSPID="Org2MSP"
 export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
 export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
@@ -43,6 +48,7 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.examp
 export CORE_PEER_ADDRESS=localhost:9051
 
 # Install the chaincode
+echo "Installing chaincode for Org2"
 peer lifecycle chaincode install paper.tar.gz
 
 #######################
