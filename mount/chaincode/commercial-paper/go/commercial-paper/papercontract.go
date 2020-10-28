@@ -106,3 +106,13 @@ func (c *Contract) GetOne(ctx TransactionContextInterface, issuer string, paperN
 
 	return paper, nil
 }
+func (c *Contract) GetState(ctx TransactionContextInterface, issuer string, paperNumber string) (*State, error) {
+	paper, err := ctx.GetPaperList().GetPaper(issuer, paperNumber)
+
+	if err != nil {
+		return nil, err
+	}
+	state := paper.GetState()
+
+	return &state, nil
+}
