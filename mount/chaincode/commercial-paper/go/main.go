@@ -6,11 +6,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/dennisdejong1995/HLF2/mount/chaincode/commercial-paper/go/commercial-paper"
+	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 	"log"
 	"os"
-
-	"./commercial-paper"
-	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
 
 func main() {
