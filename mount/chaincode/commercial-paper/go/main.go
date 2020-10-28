@@ -6,12 +6,19 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"os"
 
 	"./commercial-paper"
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
 
 func main() {
+	path, err := os.Getwd()
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println(path)
 
 	contract := new(commercialpaper.Contract)
 	contract.TransactionContextHandler = new(commercialpaper.TransactionContext)
