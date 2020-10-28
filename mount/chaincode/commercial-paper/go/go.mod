@@ -1,4 +1,4 @@
-module commercial-paper
+module 	github.com/dennisdejong1995/HLF2/mount/chaincode/commercial-paper/go/commercial-paper
 
 go 1.13
 

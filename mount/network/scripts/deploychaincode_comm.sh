@@ -11,7 +11,7 @@ HLF_PATH=$1
 pushd "$HLF_PATH"/mount/chaincode/commercial-paper/go
 
 # add the dependencies
-echp "Adding dependencies"
+echo "Adding dependencies"
 go mod vendor
 
 popd
