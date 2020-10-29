@@ -51,7 +51,7 @@ P1_CERT="${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org
 PEER2="localhost:9051"
 P2_CERT="${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt"
 CHANNEL="channel1"
-CHAINCODE="paper"
+CHAINCODE="token"
 
 if [[ "$COMM_TYPE" == "query" ]]; then
   peer chaincode "$COMM_TYPE" -C "$CHANNEL" -n "$CHAINCODE" --peerAddresses "$PEER1" --tlsRootCertFiles "$P1_CERT" -c "$JSON_COMMAND"
