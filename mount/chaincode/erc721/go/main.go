@@ -7,14 +7,14 @@ package main
 import (
 	"fmt"
 
-	"github.com/dennisdejong1995/HLF2/mount/chaincode/erc-721/go/erc-721"
+	"github.com/dennisdejong1995/HLF2/mount/chaincode/erc721/go/erc721"
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
 
 func main() {
 
-	contract := new(commercialpaper.Contract)
-	contract.TransactionContextHandler = new(commercialpaper.TransactionContext)
+	contract := new(erc721.Contract)
+	contract.TransactionContextHandler = new(erc721.TransactionContext)
 	contract.Name = "org.papernet.commercialpaper"
 	contract.Info.Version = "0.0.1"
 
@@ -24,7 +24,7 @@ func main() {
 		panic(fmt.Sprintf("Error creating chaincode. %s", err.Error()))
 	}
 
-	chaincode.Info.Title = "CommercialPaperChaincode"
+	chaincode.Info.Title = "ERC721Chaincode"
 	chaincode.Info.Version = "0.0.1"
 
 	err = chaincode.Start()
