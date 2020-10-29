@@ -15,7 +15,7 @@ type Contract struct {
 
 // Instantiate does nothing
 func (c *Contract) Instantiate() {
-	fmt.Println("Instantiated")
+	fmt.Println("ERC-721 module instantiated")
 
 }
 
@@ -24,7 +24,7 @@ func (c *Contract) Issue(ctx TransactionContextInterface, borrower string, token
 	token := ERC721{TokenID: tokenID, Borrower: borrower, IssueDateTime: issueDateTime, FaceValue: faceValue, MaturityDateTime: maturityDateTime, Owner: borrower}
 	token.SetIssued()
 	err := ctx.GetTokenList().AddToken(&token)
-	fmt.Println("Using local package")
+	fmt.Println("Issuing ERC-721 token")
 
 	if err != nil {
 		return nil, err

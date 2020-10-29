@@ -45,8 +45,8 @@ type jsonERC721 struct {
 
 // CommercialPaper defines a ERC-721 token
 type ERC721 struct {
-	TokenID          string `json:"paperNumber"`
-	Borrower         string `json:"issuer"`
+	TokenID          string `json:"tokenID"`
+	Borrower         string `json:"borrower"`
 	IssueDateTime    string `json:"issueDateTime"`
 	FaceValue        int    `json:"faceValue"`
 	MaturityDateTime string `json:"maturityDateTime"`
@@ -73,7 +73,7 @@ func (cp *ERC721) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON special handler for managing JSON marshalling
 func (cp ERC721) MarshalJSON() ([]byte, error) {
-	jcp := jsonERC721{erc721Alias: (*erc721Alias)(&cp), State: cp.state, Class: "org.papernet.commercialpaper", Key: ledgerapi.MakeKey(cp.Borrower, cp.TokenID)}
+	jcp := jsonERC721{erc721Alias: (*erc721Alias)(&cp), State: cp.state, Class: "org.dealblock.erc721", Key: ledgerapi.MakeKey(cp.Borrower, cp.TokenID)}
 
 	return json.Marshal(&jcp)
 }
