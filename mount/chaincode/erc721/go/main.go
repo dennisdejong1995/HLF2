@@ -15,7 +15,7 @@ func main() {
 
 	contract := new(erc721.Contract)
 	contract.TransactionContextHandler = new(erc721.TransactionContext)
-	contract.Name = "org.papernet.commercialpaper"
+	contract.Name = "org.dealblock.erc721"
 	contract.Info.Version = "0.0.1"
 
 	chaincode, err := contractapi.NewChaincode(contract)
