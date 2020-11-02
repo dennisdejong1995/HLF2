@@ -22,17 +22,23 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower str
 	var issueDateTime = "02-11-2020"
 
 	// Issue token under borrower
+	fmt.Printf("Issuing ERC-721 token %s for borrower %s\n", tokenID, borrower)
 	erc721, err := IssueToken(ctx, borrower, tokenID, issueDateTime, maturityDateTime, faceValue, interest)
-	println(erc721)
 	if err != nil {
 		return err
+	} else {
+		fmt.Printf("Succesfully created ERC-721 token %s for borrower %s\n", erc721.TokenID, erc721.Owner)
 	}
 
 	// Exchange currency for token
+	fmt.Printf("Exchanging ERC-721 token %s from borrower %s to lender %s\n", erc721.TokenID, erc721.Owner, lender)
 	err = Exchange(ctx, borrower, lender, tokenID)
 	if err != nil {
 		return err
+	} else {
+		fmt.Printf("Succesfully exchanged ERC-721 token %s from borrower %s to lender %s\n", erc721.TokenID, erc721.Owner, lender)
 	}
+
 	return nil
 }
 
@@ -44,7 +50,7 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower str
 func Exchange(ctx TransactionContextInterface, borrower string, lender string, tokenID string) error {
 	// TODO: Add atomic swap functionality
 	erc721, err := ExchangeToken(ctx, borrower, lender, tokenID)
-	println(erc721)
+	fmt.Println(erc721)
 	if err != nil {
 		return err
 	}
@@ -57,7 +63,6 @@ func IssueToken(ctx TransactionContextInterface, borrower string, tokenID string
 	token := ERC721{TokenID: tokenID, Borrower: borrower, IssueDateTime: issueDateTime, FaceValue: faceValue, MaturityDateTime: maturityDateTime, Owner: borrower, Interest: interest}
 	token.SetIssued()
 	err := ctx.GetTokenList().AddToken(&token)
-	fmt.Println("Issuing ERC-721 token")
 
 	if err != nil {
 		return nil, err
