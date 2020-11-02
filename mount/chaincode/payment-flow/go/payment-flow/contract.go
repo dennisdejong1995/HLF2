@@ -58,29 +58,29 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower str
 
 	token, err := ctx.GetTokenList().GetToken(borrower, tokenID)
 
-	if err != nil {
-		return nil, err
-	}
-
-	if token.Owner != borrower {
-		return nil, fmt.Errorf("token %s:%s is not owned by %s", borrower, tokenID, borrower)
-	}
-
-	if token.IsIssued() {
-		token.SetTrading()
-	}
-
-	if !token.IsTrading() {
-		return nil, fmt.Errorf("token %s:%s is not trading. Current state = %s", borrower, tokenID, token.GetState())
-	}
-
-	token.Owner = lender
-
-	err = ctx.GetTokenList().UpdateToken(token)
-
-	if err != nil {
-		return nil, err
-	}
+	//if err != nil {
+	//	return nil, err
+	//}
+	//
+	//if token.Owner != borrower {
+	//	return nil, fmt.Errorf("token %s:%s is not owned by %s", borrower, tokenID, borrower)
+	//}
+	//
+	//if token.IsIssued() {
+	//	token.SetTrading()
+	//}
+	//
+	//if !token.IsTrading() {
+	//	return nil, fmt.Errorf("token %s:%s is not trading. Current state = %s", borrower, tokenID, token.GetState())
+	//}
+	//
+	//token.Owner = lender
+	//
+	//err = ctx.GetTokenList().UpdateToken(token)
+	//
+	//if err != nil {
+	//	return nil, err
+	//}
 
 	//fmt.Printf("Exchanging ERC-721 token %s from borrower %s to lender %s\n", token.TokenID, token.Owner, lender)
 	//erc721, err = Exchange(ctx, borrower, lender, tokenID)
@@ -90,7 +90,7 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower str
 	//	fmt.Printf("Successfully exchanged ERC-721 token %s from borrower %s to lender %s\n", erc721.TokenID, erc721.Owner, lender)
 	//}
 
-	return erc721, nil
+	return token, nil
 }
 
 //func (c *Contract) InitiateRepayment(ctx TransactionContextInterface, borrower string, tokenID string, issueDateTime string, maturityDateTime string, faceValue int, interest float32)  error {
