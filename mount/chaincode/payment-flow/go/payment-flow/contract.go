@@ -41,8 +41,8 @@ func (c *Contract) GetOne(ctx TransactionContextInterface, borrower string, toke
 }
 
 func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower string, lender string, maturityDateTime string, faceValue int) (*ERC721, error) {
-	var tokenID = "000001"
-	var issueDateTime = "2020-11-02"
+	var tokenID string = "00007"
+	var issueDateTime string = "2020-11-02"
 
 	// Issue token under borrower
 	fmt.Printf("Issuing ERC-721 token %s for borrower %s\n", tokenID, borrower)
@@ -56,9 +56,17 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower str
 		fmt.Printf("Succesfully created ERC-721 token %s for borrower %s\n", token.TokenID, token.Owner)
 	}
 
+	erc721, err := ctx.GetTokenList().GetToken(borrower, tokenID)
+
+	if err != nil {
+		return nil, err
+	} else {
+		fmt.Printf("Found ERC-721 token %s from borrower %s\n", token.TokenID, token.Owner)
+	}
+
 	// Exchange currency for token
 	fmt.Printf("Exchanging ERC-721 token %s from borrower %s to lender %s\n", token.TokenID, token.Owner, lender)
-	erc721, err := Exchange(ctx, borrower, lender, tokenID)
+	erc721, err = Exchange(ctx, borrower, lender, tokenID)
 	if err != nil {
 		return nil, err
 	} else {
