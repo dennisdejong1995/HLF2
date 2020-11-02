@@ -17,7 +17,7 @@ func (c *Contract) Instantiate() {
 
 }
 
-func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower string, lender string, maturityDateTime string, faceValue int, interest float32) error {
+func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower string, lender string, maturityDateTime string, faceValue int, interest float32) (*ERC721, error) {
 	var tokenID = "000001"
 	var issueDateTime = "02-11-2020"
 
@@ -25,21 +25,21 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower str
 	fmt.Printf("Issuing ERC-721 token %s for borrower %s\n", tokenID, borrower)
 	erc721, err := IssueToken(ctx, borrower, tokenID, issueDateTime, maturityDateTime, faceValue, interest)
 	if err != nil {
-		return err
+		return nil, err
 	} else {
 		fmt.Printf("Succesfully created ERC-721 token %s for borrower %s\n", erc721.TokenID, erc721.Owner)
 	}
 
 	// Exchange currency for token
 	fmt.Printf("Exchanging ERC-721 token %s from borrower %s to lender %s\n", erc721.TokenID, erc721.Owner, lender)
-	err = Exchange(ctx, borrower, lender, tokenID)
+	erc721, err = Exchange(ctx, borrower, lender, tokenID)
 	if err != nil {
-		return err
+		return nil, err
 	} else {
 		fmt.Printf("Succesfully exchanged ERC-721 token %s from borrower %s to lender %s\n", erc721.TokenID, erc721.Owner, lender)
 	}
 
-	return nil
+	return erc721, nil
 }
 
 //func (c *Contract) InitiateRepayment(ctx TransactionContextInterface, borrower string, tokenID string, issueDateTime string, maturityDateTime string, faceValue int, interest float32)  error {
@@ -47,14 +47,14 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower str
 
 // Payment flow functions
 
-func Exchange(ctx TransactionContextInterface, borrower string, lender string, tokenID string) error {
+func Exchange(ctx TransactionContextInterface, borrower string, lender string, tokenID string) (*ERC721, error) {
 	// TODO: Add atomic swap functionality
 	erc721, err := ExchangeToken(ctx, borrower, lender, tokenID)
 	fmt.Println(erc721)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return erc721, nil
 }
 
 // ERC-721 functions
