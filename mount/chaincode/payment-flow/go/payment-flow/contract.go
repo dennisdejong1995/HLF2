@@ -46,9 +46,7 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower str
 
 	// Issue token under borrower
 	fmt.Printf("Issuing ERC-721 token %s for borrower %s\n", tokenID, borrower)
-	token := ERC721{TokenID: tokenID, Borrower: borrower, IssueDateTime: issueDateTime, FaceValue: faceValue, MaturityDateTime: maturityDateTime, Owner: borrower}
-	token.SetIssued()
-	err := ctx.GetTokenList().AddToken(&token)
+	token, err := IssueToken(ctx, borrower, tokenID, issueDateTime, maturityDateTime, faceValue)
 
 	if err != nil {
 		return nil, err
@@ -56,15 +54,7 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower str
 		fmt.Printf("Succesfully created ERC-721 token %s for borrower %s\n", token.TokenID, token.Owner)
 	}
 
-	//erc721, err := ctx.GetTokenList().GetToken(borrower, tokenID)
-	//
-	//if err != nil {
-	//	return nil, err
-	//} else {
-	//	fmt.Printf("Found ERC-721 token %s from borrower %s\n", token.TokenID, token.Owner)
-	//}
-	//
-	//// Exchange currency for token
+	// Exchange currency for token
 	//fmt.Printf("Exchanging ERC-721 token %s from borrower %s to lender %s\n", token.TokenID, token.Owner, lender)
 	//erc721, err = Exchange(ctx, borrower, lender, tokenID)
 	//if err != nil {
@@ -73,7 +63,7 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower str
 	//	fmt.Printf("Succesfully exchanged ERC-721 token %s from borrower %s to lender %s\n", erc721.TokenID, erc721.Owner, lender)
 	//}
 
-	return &token, nil
+	return token, nil
 }
 
 //func (c *Contract) InitiateRepayment(ctx TransactionContextInterface, borrower string, tokenID string, issueDateTime string, maturityDateTime string, faceValue int, interest float32)  error {
@@ -92,10 +82,10 @@ func Exchange(ctx TransactionContextInterface, borrower string, lender string, t
 
 // ERC-721 functions
 
-func IssueToken(tokenList ListInterface, borrower string, tokenID string, issueDateTime string, maturityDateTime string, faceValue int) (*ERC721, error) {
+func IssueToken(ctx TransactionContextInterface, borrower string, tokenID string, issueDateTime string, maturityDateTime string, faceValue int) (*ERC721, error) {
 	token := ERC721{TokenID: tokenID, Borrower: borrower, IssueDateTime: issueDateTime, FaceValue: faceValue, MaturityDateTime: maturityDateTime, Owner: borrower}
 	token.SetIssued()
-	err := tokenList.AddToken(&token)
+	err := ctx.GetTokenList().AddToken(&token)
 
 	if err != nil {
 		return nil, err
