@@ -30,8 +30,8 @@ func (state State) String() string {
 }
 
 // CreateTokenKey creates a key for ERC-721 tokens
-func CreateTokenKey(issuer string, paperNumber string) string {
-	return ledgerapi.MakeKey(issuer, paperNumber)
+func CreateTokenKey(borrower string, tokenID string) string {
+	return ledgerapi.MakeKey(borrower, tokenID)
 }
 
 // Used for managing the fact status is private but want it in world state
@@ -45,16 +45,15 @@ type jsonERC721 struct {
 
 // CommercialPaper defines a ERC-721 token
 type ERC721 struct {
-	TokenID          string  `json:"tokenID"`
-	Borrower         string  `json:"borrower"`
-	IssueDateTime    string  `json:"issueDateTime"`
-	FaceValue        int     `json:"faceValue"`
-	MaturityDateTime string  `json:"maturityDateTime"`
-	Owner            string  `json:"owner"`
-	Interest         float32 `json:"interest"`
-	state            State   `metadata:"currentState"`
-	class            string  `metadata:"class"`
-	key              string  `metadata:"key"`
+	TokenID          string `json:"tokenID"`
+	Borrower         string `json:"borrower"`
+	IssueDateTime    string `json:"issueDateTime"`
+	FaceValue        int    `json:"faceValue"`
+	MaturityDateTime string `json:"maturityDateTime"`
+	Owner            string `json:"owner"`
+	state            State  `metadata:"currentState"`
+	class            string `metadata:"class"`
+	key              string `metadata:"key"`
 }
 
 // UnmarshalJSON special handler for managing JSON marshalling

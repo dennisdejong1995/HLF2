@@ -17,13 +17,13 @@ func (c *Contract) Instantiate() {
 
 }
 
-func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower string, lender string, maturityDateTime string, faceValue int, interest float32) (*ERC721, error) {
+func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower string, lender string, maturityDateTime string, faceValue int) (*ERC721, error) {
 	var tokenID = "000001"
 	var issueDateTime = "02-11-2020"
 
 	// Issue token under borrower
 	fmt.Printf("Issuing ERC-721 token %s for borrower %s\n", tokenID, borrower)
-	erc721, err := IssueToken(ctx, borrower, tokenID, issueDateTime, maturityDateTime, faceValue, interest)
+	erc721, err := IssueToken(ctx, borrower, tokenID, issueDateTime, maturityDateTime, faceValue)
 	if err != nil {
 		return nil, err
 	} else {
@@ -56,7 +56,6 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower str
 func Exchange(ctx TransactionContextInterface, borrower string, lender string, tokenID string) (*ERC721, error) {
 	// TODO: Add atomic swap functionality
 	erc721, err := ExchangeToken(ctx, borrower, lender, tokenID)
-	fmt.Println(erc721)
 	if err != nil {
 		return nil, err
 	}
@@ -65,8 +64,8 @@ func Exchange(ctx TransactionContextInterface, borrower string, lender string, t
 
 // ERC-721 functions
 
-func IssueToken(ctx TransactionContextInterface, borrower string, tokenID string, issueDateTime string, maturityDateTime string, faceValue int, interest float32) (*ERC721, error) {
-	token := ERC721{TokenID: tokenID, Borrower: borrower, IssueDateTime: issueDateTime, FaceValue: faceValue, MaturityDateTime: maturityDateTime, Owner: borrower, Interest: interest}
+func IssueToken(ctx TransactionContextInterface, borrower string, tokenID string, issueDateTime string, maturityDateTime string, faceValue int) (*ERC721, error) {
+	token := ERC721{TokenID: tokenID, Borrower: borrower, IssueDateTime: issueDateTime, FaceValue: faceValue, MaturityDateTime: maturityDateTime, Owner: borrower}
 	token.SetIssued()
 	err := ctx.GetTokenList().AddToken(&token)
 
