@@ -2,3 +2,4 @@
 *~
 *.log
 .DS_Store
+/mount/chaincode/payment-flow/go/vendor/
