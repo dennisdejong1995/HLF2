@@ -30,6 +30,16 @@ func (c *Contract) Issue(ctx TransactionContextInterface, borrower string, token
 	return &token, nil
 }
 
+func (c *Contract) GetOne(ctx TransactionContextInterface, borrower string, tokenID string) (*ERC721, error) {
+	token, err := ctx.GetTokenList().GetToken(borrower, tokenID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return token, nil
+}
+
 func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower string, lender string, maturityDateTime string, faceValue int) (*ERC721, error) {
 	var tokenID = "000001"
 	var issueDateTime = "02-11-2020"
