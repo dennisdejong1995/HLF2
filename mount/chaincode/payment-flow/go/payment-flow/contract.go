@@ -17,6 +17,19 @@ func (c *Contract) Instantiate() {
 
 }
 
+func (c *Contract) Issue(ctx TransactionContextInterface, borrower string, tokenID string, issueDateTime string, maturityDateTime string, faceValue int) (*ERC721, error) {
+	token := ERC721{TokenID: tokenID, Borrower: borrower, IssueDateTime: issueDateTime, FaceValue: faceValue, MaturityDateTime: maturityDateTime, Owner: borrower}
+	token.SetIssued()
+	err := ctx.GetTokenList().AddToken(&token)
+	fmt.Println("Issuing ERC-721 token")
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &token, nil
+}
+
 func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower string, lender string, maturityDateTime string, faceValue int) (*ERC721, error) {
 	var tokenID = "000001"
 	var issueDateTime = "02-11-2020"
