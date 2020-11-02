@@ -1,4 +1,4 @@
-package erc721
+package payment_flow
 
 import (
 	"encoding/json"

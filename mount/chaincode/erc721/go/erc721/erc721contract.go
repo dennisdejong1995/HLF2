@@ -20,8 +20,8 @@ func (c *Contract) Instantiate() {
 }
 
 // Issue creates a new commercial paper and stores it in the world state
-func (c *Contract) Issue(ctx TransactionContextInterface, borrower string, tokenID string, issueDateTime string, maturityDateTime string, faceValue int) (*ERC721, error) {
-	token := ERC721{TokenID: tokenID, Borrower: borrower, IssueDateTime: issueDateTime, FaceValue: faceValue, MaturityDateTime: maturityDateTime, Owner: borrower}
+func (c *Contract) Issue(ctx TransactionContextInterface, borrower string, tokenID string, issueDateTime string, maturityDateTime string, faceValue int, interest float32) (*ERC721, error) {
+	token := ERC721{TokenID: tokenID, Borrower: borrower, IssueDateTime: issueDateTime, FaceValue: faceValue, MaturityDateTime: maturityDateTime, Owner: borrower, Interest: interest}
 	token.SetIssued()
 	err := ctx.GetTokenList().AddToken(&token)
 	fmt.Println("Issuing ERC-721 token")
