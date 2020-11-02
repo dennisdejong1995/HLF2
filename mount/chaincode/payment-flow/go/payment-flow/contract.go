@@ -30,6 +30,12 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower str
 		fmt.Printf("Succesfully created ERC-721 token %s for borrower %s\n", erc721.TokenID, erc721.Owner)
 	}
 
+	token, err := ctx.GetTokenList().GetToken(borrower, tokenID)
+	if err != nil {
+		return nil, err
+	} else {
+		fmt.Printf("Found token %s:%s", token.Borrower, token.TokenID)
+	}
 	// Exchange currency for token
 	fmt.Printf("Exchanging ERC-721 token %s from borrower %s to lender %s\n", erc721.TokenID, erc721.Owner, lender)
 	erc721, err = Exchange(ctx, borrower, lender, tokenID)
