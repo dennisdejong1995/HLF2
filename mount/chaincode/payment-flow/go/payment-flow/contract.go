@@ -42,7 +42,7 @@ func (c *Contract) GetOne(ctx TransactionContextInterface, borrower string, toke
 
 func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower string, lender string, maturityDateTime string, faceValue int) (*ERC721, error) {
 	var tokenID string = "00007"
-	var issueDateTime string = "2020-11-02"
+	var issueDateTime string = "2020-11-01"
 
 	// Issue token under borrower
 	fmt.Printf("Issuing ERC-721 token %s for borrower %s\n", tokenID, borrower)
@@ -55,15 +55,32 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower str
 	}
 
 	// Exchange currency for token
+
+	erc721, err := ctx.GetTokenList().GetToken(borrower, tokenID)
+
+	if err != nil {
+		return nil, err
+	}
+	if erc721.Borrower != borrower {
+		return nil, fmt.Errorf("ERC-721 token %s:%s is not owned by %s", erc721.Borrower, erc721.TokenID, borrower)
+	}
+
+	erc721.Owner = lender
+
+	err = ctx.GetTokenList().UpdateToken(token)
+
+	if err != nil {
+		return nil, err
+	}
 	//fmt.Printf("Exchanging ERC-721 token %s from borrower %s to lender %s\n", token.TokenID, token.Owner, lender)
 	//erc721, err = Exchange(ctx, borrower, lender, tokenID)
 	//if err != nil {
 	//	return nil, err
 	//} else {
-	//	fmt.Printf("Succesfully exchanged ERC-721 token %s from borrower %s to lender %s\n", erc721.TokenID, erc721.Owner, lender)
+	//	fmt.Printf("Successfully exchanged ERC-721 token %s from borrower %s to lender %s\n", erc721.TokenID, erc721.Owner, lender)
 	//}
 
-	return token, nil
+	return erc721, nil
 }
 
 //func (c *Contract) InitiateRepayment(ctx TransactionContextInterface, borrower string, tokenID string, issueDateTime string, maturityDateTime string, faceValue int, interest float32)  error {
