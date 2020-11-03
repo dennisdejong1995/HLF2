@@ -55,9 +55,9 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower str
 	}
 
 	// Exchange currency for token
-	fmt.Printf("Before")
+	fmt.Println("Before")
 	//token, err := ctx.GetTokenList().GetToken(borrower, tokenID)
-	fmt.Printf("After")
+	fmt.Println("After")
 
 	//if err != nil {
 	//	fmt.Printf("Error")
