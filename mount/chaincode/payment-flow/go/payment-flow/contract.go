@@ -48,11 +48,11 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower str
 	fmt.Printf("Issuing ERC-721 token %s for borrower %s\n", tokenID, borrower)
 	erc721, err := IssueToken(ctx, borrower, tokenID, issueDateTime, maturityDateTime, faceValue)
 
-	if err != nil {
-		return nil, err
-	} else {
-		fmt.Printf("Succesfully created ERC-721 token %s for borrower %s\n", erc721.TokenID, erc721.Owner)
-	}
+	//if err != nil {
+	//	return nil, err
+	//} else {
+	//	fmt.Printf("Succesfully created ERC-721 token %s for borrower %s\n", erc721.TokenID, erc721.Owner)
+	//}
 
 	// Exchange currency for token
 	fmt.Printf("Before")
