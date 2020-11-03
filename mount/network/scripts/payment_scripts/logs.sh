@@ -5,4 +5,4 @@ if [[ $# -ne 1 ]] ; then
     exit 1
 fi
 
-docker logs -f $(docker ps | grep dev-peer0."$1" | awk '{print $11}')
+docker logs -f $(docker ps | grep dev-peer0.$1 | awk '{print $11}')
