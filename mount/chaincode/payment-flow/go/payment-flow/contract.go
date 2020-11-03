@@ -59,7 +59,7 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower str
 
 	if err != nil {
 		fmt.Println("Error")
-		fmt.Printf("Error: %s", err)
+		fmt.Print(err)
 		//return nil, err
 	} else {
 		fmt.Printf("Succesfully got ERC-721 token %s for borrower %s\n", token.TokenID, token.Owner)
