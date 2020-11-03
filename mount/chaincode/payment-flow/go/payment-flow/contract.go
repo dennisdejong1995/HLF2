@@ -55,16 +55,14 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower str
 	}
 
 	// Exchange currency for token
-	fmt.Println("Before")
-	//token, err := ctx.GetTokenList().GetToken(borrower, tokenID)
-	fmt.Println("After")
+	token, err := ctx.GetTokenList().GetToken(borrower, tokenID)
 
-	//if err != nil {
-	//	fmt.Printf("Error")
-	//	//return nil, err
-	//} else {
-	//	fmt.Printf("Succesfully got ERC-721 token %s for borrower %s\n", token.TokenID, token.Owner)
-	//}
+	if err != nil {
+		fmt.Println("Error")
+		//return nil, err
+	} else {
+		fmt.Printf("Succesfully got ERC-721 token %s for borrower %s\n", token.TokenID, token.Owner)
+	}
 
 	//if token.Owner != borrower {
 	//	return nil, fmt.Errorf("token %s:%s is not owned by %s", borrower, tokenID, borrower)
