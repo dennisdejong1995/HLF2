@@ -19,7 +19,7 @@ sudo ./generatecryptos.sh "$HLF_PATH"
 echo "Putting network up"
 sudo ./networkupwithcouchdb.sh "$HLF_PATH"
 
-wait 10
+sleep 10
 #echo "Press return to continue"
 #read -r
 
