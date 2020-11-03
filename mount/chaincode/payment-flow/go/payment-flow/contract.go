@@ -56,15 +56,15 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower str
 
 	// Exchange currency for token
 	fmt.Printf("Before")
-	token, err := ctx.GetTokenList().GetToken(borrower, tokenID)
+	//token, err := ctx.GetTokenList().GetToken(borrower, tokenID)
 	fmt.Printf("After")
 
-	if err != nil {
-		fmt.Printf("Error")
-		//return nil, err
-	} else {
-		fmt.Printf("Succesfully got ERC-721 token %s for borrower %s\n", token.TokenID, token.Owner)
-	}
+	//if err != nil {
+	//	fmt.Printf("Error")
+	//	//return nil, err
+	//} else {
+	//	fmt.Printf("Succesfully got ERC-721 token %s for borrower %s\n", token.TokenID, token.Owner)
+	//}
 
 	//if token.Owner != borrower {
 	//	return nil, fmt.Errorf("token %s:%s is not owned by %s", borrower, tokenID, borrower)
@@ -94,7 +94,7 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower str
 	//	fmt.Printf("Successfully exchanged ERC-721 token %s from borrower %s to lender %s\n", erc721.TokenID, erc721.Owner, lender)
 	//}
 
-	return token, nil
+	return erc721, nil
 }
 
 //func (c *Contract) InitiateRepayment(ctx TransactionContextInterface, borrower string, tokenID string, issueDateTime string, maturityDateTime string, faceValue int, interest float32)  error {
