@@ -58,14 +58,14 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower str
 
 	token, err := ctx.GetTokenList().GetToken(borrower, tokenID)
 
-	//if err != nil {
-	//	return nil, err
-	//}
-	//
-	//if token.Owner != borrower {
-	//	return nil, fmt.Errorf("token %s:%s is not owned by %s", borrower, tokenID, borrower)
-	//}
-	//
+	if err != nil {
+		return nil, err
+	}
+
+	if token.Owner != borrower {
+		return nil, fmt.Errorf("token %s:%s is not owned by %s", borrower, tokenID, borrower)
+	}
+
 	//if token.IsIssued() {
 	//	token.SetTrading()
 	//}
