@@ -30,27 +30,6 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower str
 	} else {
 		fmt.Printf("Succesfully created ERC-721 token %s for borrower %s\n", erc721.TokenID, erc721.Owner)
 	}
-	//
-	//// Exchange currency for token
-	//if erc721.Owner != borrower {
-	//	return nil, fmt.Errorf("token %s:%s is not owned by %s", borrower, tokenID, borrower)
-	//}
-	//
-	//if erc721.IsIssued() {
-	//	erc721.SetTrading()
-	//}
-	//
-	//if !erc721.IsTrading() {
-	//	return nil, fmt.Errorf("token %s:%s is not trading. Current state = %s", borrower, tokenID, erc721.GetState())
-	//}
-	//
-	//erc721.Owner = lender
-	//
-	//err = ctx.GetTokenList().UpdateToken(erc721)
-	//
-	//if err != nil {
-	//	return nil, err
-	//}
 
 	fmt.Printf("Exchanging ERC-721 token %s from borrower %s to lender %s\n", erc721.TokenID, erc721.Owner, lender)
 	erc721, err = Exchange(ctx, borrower, lender, erc721)
