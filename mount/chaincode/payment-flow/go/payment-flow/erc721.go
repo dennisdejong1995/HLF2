@@ -50,6 +50,7 @@ type ERC721 struct {
 	IssueDateTime    string `json:"issueDateTime"`
 	FaceValue        int    `json:"faceValue"`
 	MaturityDateTime string `json:"maturityDateTime"`
+	RedeemDateTime   string `json:"redeemDateTime"`
 	Owner            string `json:"owner"`
 	state            State  `metadata:"currentState"`
 	class            string `metadata:"class"`
