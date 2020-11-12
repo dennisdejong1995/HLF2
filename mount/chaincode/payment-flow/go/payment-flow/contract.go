@@ -114,7 +114,7 @@ func RedeemToken(ctx TransactionContextInterface, borrower string, token *ERC721
 
 func ExchangeToken(ctx TransactionContextInterface, currentOwner string, futureOwner string, token *ERC721) (*ERC721, error) {
 
-	if token.Borrower != currentOwner {
+	if token.Owner != currentOwner {
 		return nil, fmt.Errorf("ERC-721 token %s:%s is not owned by %s", token.Borrower, token.TokenID, currentOwner)
 	}
 
