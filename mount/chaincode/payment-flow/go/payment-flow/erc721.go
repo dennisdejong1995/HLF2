@@ -53,6 +53,7 @@ type ERC721 struct {
 	RedeemDateTime   string `json:"redeemDateTime"`
 	Owner            string `json:"owner"`
 	Currency         string `json:"currency"`
+	Interest         int    `json:"interest"`
 	state            State  `metadata:"currentState"`
 	class            string `metadata:"class"`
 	key              string `metadata:"key"`
