@@ -1,6 +1,7 @@
 package payment_flow
 
 import (
+	"errors"
 	"fmt"
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 	"time"
@@ -18,14 +19,14 @@ func (c *Contract) Instantiate() {
 
 }
 
-func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower string, lender string, maturityDateTime string, faceValue int) (*ERC721, error) {
+func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower string, lender string, maturityDateTime string, faceValue int, currency_id int) (*ERC721, error) {
 	var tokenID string = "00007"
 	currentTime := time.Now()
 	var issueDateTime string = currentTime.Format("2006-01-02")
 
 	// Issue token under borrower
 	fmt.Printf("Issuing ERC-721 token %s for borrower %s\n", tokenID, borrower)
-	erc721, err := IssueToken(ctx, borrower, tokenID, issueDateTime, maturityDateTime, faceValue)
+	erc721, err := IssueToken(ctx, borrower, tokenID, issueDateTime, maturityDateTime, faceValue, currency_id)
 
 	if err != nil {
 		return nil, err
@@ -72,13 +73,28 @@ func Exchange(ctx TransactionContextInterface, receiver string, sender string, e
 	if err != nil {
 		return nil, err
 	}
+	erc721, hash, err := ExchangeCurrency(ctx, receiver, sender, erc721)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Printf("Received hash %s", hash)
 	return erc721, nil
 }
 
 // ERC-721 functions
 
-func IssueToken(ctx TransactionContextInterface, borrower string, tokenID string, issueDateTime string, maturityDateTime string, faceValue int) (*ERC721, error) {
-	token := ERC721{TokenID: tokenID, Borrower: borrower, IssueDateTime: issueDateTime, FaceValue: faceValue, MaturityDateTime: maturityDateTime, Owner: borrower}
+func IssueToken(ctx TransactionContextInterface, borrower string, tokenID string, issueDateTime string, maturityDateTime string, faceValue int, currency_id int) (*ERC721, error) {
+	var currency string = ""
+	switch currency_id {
+	case 0:
+		currency = "USDT"
+	case 1:
+		currency = "EURS"
+	default:
+		return nil, errors.New("No valid currency selected")
+	}
+
+	token := ERC721{TokenID: tokenID, Borrower: borrower, IssueDateTime: issueDateTime, FaceValue: faceValue, MaturityDateTime: maturityDateTime, Owner: borrower, Currency: currency}
 	token.SetIssued()
 	err := ctx.GetTokenList().AddToken(&token)
 
@@ -127,4 +143,19 @@ func ExchangeToken(ctx TransactionContextInterface, currentOwner string, futureO
 	}
 
 	return token, nil
+}
+
+func ExchangeCurrency(ctx TransactionContextInterface, receiver string, sender string, token *ERC721) (*ERC721, string, error) {
+	fmt.Printf("Exchanging currency from %s to %s\n", sender, receiver)
+	switch token.Currency {
+	case "USDT":
+		fmt.Printf("Exchanging %s in USDT to %s\n", token.FaceValue, receiver)
+		return token, "example_hash", nil
+	case "EURS":
+		fmt.Printf("Exchanging %s in EURS to %s\n", token.FaceValue, receiver)
+		return token, "example_hash", nil
+	default:
+		return nil, "", fmt.Errorf("%s:%s No valid currency chosen for exchange", token.TokenID, token.Borrower)
+	}
+
 }
