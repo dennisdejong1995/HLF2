@@ -19,14 +19,13 @@ func (c *Contract) Instantiate() {
 
 }
 
-func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower string, lender string, maturityDateTime string, faceValue int, currency_id int) (*ERC721, error) {
-	var tokenID string = "00007"
+func (c *Contract) InitiatePayment(ctx TransactionContextInterface, assetID string, borrower string, lender string, maturityDateTime string, faceValue int, currencyID int) (*ERC721, error) {
 	currentTime := time.Now()
 	var issueDateTime string = currentTime.Format("2006-01-02")
 
 	// Issue token under borrower
-	fmt.Printf("Issuing ERC-721 token %s for borrower %s\n", tokenID, borrower)
-	erc721, err := IssueToken(ctx, borrower, tokenID, issueDateTime, maturityDateTime, faceValue, currency_id)
+	fmt.Printf("Issuing ERC-721 token %s for borrower %s\n", assetID, borrower)
+	erc721, err := IssueToken(ctx, borrower, assetID, issueDateTime, maturityDateTime, faceValue, currencyID)
 
 	if err != nil {
 		return nil, err
@@ -34,12 +33,12 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, borrower str
 		fmt.Printf("Succesfully created ERC-721 token %s for borrower %s\n", erc721.TokenID, erc721.Owner)
 	}
 
-	fmt.Printf("Exchanging ERC-721 token %s from borrower %s to lender %s\n", erc721.TokenID, erc721.Owner, lender)
+	fmt.Printf("Exchanging ERC-721 token %s from borrower %s to investor %s\n", erc721.TokenID, erc721.Owner, lender)
 	erc721, err = Exchange(ctx, borrower, lender, erc721)
 	if err != nil {
 		return nil, err
 	} else {
-		fmt.Printf("Successfully exchanged ERC-721 token %s from borrower %s to lender %s\n", erc721.TokenID, erc721.Owner, lender)
+		fmt.Printf("Successfully exchanged ERC-721 token %s from borrower %s to lender %s\n", erc721.TokenID, erc721.Borrower, erc721.Owner)
 	}
 
 	return erc721, nil
@@ -77,7 +76,7 @@ func Exchange(ctx TransactionContextInterface, receiver string, sender string, e
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("Received hash %s", hash)
+	fmt.Printf("Received hash %s\n", hash)
 	return erc721, nil
 }
 
@@ -149,10 +148,10 @@ func ExchangeCurrency(ctx TransactionContextInterface, receiver string, sender s
 	fmt.Printf("Exchanging currency from %s to %s\n", sender, receiver)
 	switch token.Currency {
 	case "USDT":
-		fmt.Printf("Exchanging %s in USDT to %s\n", token.FaceValue, receiver)
+		fmt.Printf("Exchanging %d in USDT to %s\n", token.FaceValue, receiver)
 		return token, "example_hash", nil
 	case "EURS":
-		fmt.Printf("Exchanging %s in EURS to %s\n", token.FaceValue, receiver)
+		fmt.Printf("Exchanging %d in EURS to %s\n", token.FaceValue, receiver)
 		return token, "example_hash", nil
 	default:
 		return nil, "", fmt.Errorf("%s:%s No valid currency chosen for exchange", token.TokenID, token.Borrower)
