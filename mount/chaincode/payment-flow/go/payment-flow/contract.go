@@ -146,13 +146,16 @@ func ExchangeToken(ctx TransactionContextInterface, currentOwner string, futureO
 
 func ExchangeCurrency(receiver string, sender string, token *ERC721) (*ERC721, string, error) {
 	fmt.Printf("Exchanging currency from %s to %s\n", sender, receiver)
-	var amount int = 0
+
 	// Determining amount
+	var amount int = 0
 	switch token.Borrower {
 	case receiver:
 		amount = token.FaceValue
 	case sender:
-		amount = token.FaceValue*100 + token.Interest/100
+		amount = token.FaceValue * (100 + token.Interest) / 100
+	default:
+		return nil, "", fmt.Errorf("Unknown transaction type")
 	}
 
 	// Select exchange function for currency type
