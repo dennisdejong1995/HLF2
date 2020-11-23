@@ -152,8 +152,10 @@ func ExchangeCurrency(receiver string, sender string, token *ERC721) (*ERC721, s
 	switch token.Borrower {
 	case receiver:
 		amount = token.FaceValue
+		fmt.Printf("Amount: %d", amount)
 	case sender:
 		amount = token.FaceValue * (100 + token.Interest) / 100
+		fmt.Printf("Amount: %d", amount)
 	default:
 		return nil, "", fmt.Errorf("Unknown transaction type")
 	}
