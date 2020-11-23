@@ -72,7 +72,7 @@ func Exchange(ctx TransactionContextInterface, receiver string, sender string, e
 	if err != nil {
 		return nil, err
 	}
-	erc721, hash, err := ExchangeCurrency(ctx, receiver, sender, erc721)
+	erc721, hash, err := ExchangeCurrency(receiver, sender, erc721)
 	if err != nil {
 		return nil, err
 	}
@@ -144,17 +144,27 @@ func ExchangeToken(ctx TransactionContextInterface, currentOwner string, futureO
 	return token, nil
 }
 
-func ExchangeCurrency(ctx TransactionContextInterface, receiver string, sender string, token *ERC721) (*ERC721, string, error) {
+func ExchangeCurrency(receiver string, sender string, token *ERC721) (*ERC721, string, error) {
 	fmt.Printf("Exchanging currency from %s to %s\n", sender, receiver)
+	var amount int = 0
+	// Determining amount
+	switch token.Borrower {
+	case receiver:
+		amount = token.FaceValue
+	case sender:
+		amount = token.FaceValue*100 + token.Interest/100
+	}
+
+	// Select exchange function for currency type
 	switch token.Currency {
 	case "USDT":
-		hash, err := ExchangeUSDT(token, receiver, "receiver_address", sender, "sender_address")
+		hash, err := ExchangeUSDT(amount, receiver, "receiver_address", sender, "sender_address")
 		if err != nil {
 			return nil, "", err
 		}
 		return token, hash, nil
 	case "EURS":
-		hash, err := ExchangeEURS(token, receiver, "receiver_address", sender, "sender_address")
+		hash, err := ExchangeEURS(amount, receiver, "receiver_address", sender, "sender_address")
 		if err != nil {
 			return nil, "", err
 		}
