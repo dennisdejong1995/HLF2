@@ -11,7 +11,7 @@ func ExchangeUSDT(amount int, receiver string, receiverAddress string, sender st
 	// TODO: Add API connection to Ethereum for exchanging tether
 	fmt.Printf("Exchanging %d in USDT to %s from %s\n", amount, receiver, sender)
 
-	url := "https://mainnet.infura.io/v3/189920b69bd147cbbee96ca2c36e5ea3"
+	url := "https://ropsten.infura.io/v3/189920b69bd147cbbee96ca2c36e5ea3"
 	fmt.Printf("URL:>%s\n", url)
 
 	var jsonStr = []byte(`{"jsonrpc":"2.0","method":"eth_blockNumber","params": [],"id":1}`)
