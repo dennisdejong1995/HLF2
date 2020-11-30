@@ -12,7 +12,7 @@ func ExchangeUSDT(amount int, receiver string, receiverAddress string, sender st
 	fmt.Printf("Exchanging %d in USDT to %s from %s\n", amount, receiver, sender)
 
 	url := "https://mainnet.infura.io/v3/189920b69bd147cbbee96ca2c36e5ea3"
-	fmt.Println("URL:>", url)
+	fmt.Printf("URL:>%s\n", url)
 
 	var jsonStr = []byte(`{"jsonrpc":"2.0","method":"eth_blockNumber","params": [],"id":1}`)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
@@ -25,12 +25,12 @@ func ExchangeUSDT(amount int, receiver string, receiverAddress string, sender st
 	}
 	defer resp.Body.Close()
 
-	fmt.Printf("response Status: %s", resp.Status)
-	fmt.Printf("response Headers: %s", resp.Header)
+	fmt.Printf("response Status: %s\n", resp.Status)
+	fmt.Printf("response Headers: %s\n", resp.Header)
 	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Printf("response Body: %s", string(body))
+	fmt.Printf("response Body: %s\n", string(body))
 
-	return "example_hash", nil
+	return resp.Status, nil
 }
 
 func ExchangeEURS(amount int, receiver string, receiverAddress string, sender string, senderAddress string) (string, error) {
