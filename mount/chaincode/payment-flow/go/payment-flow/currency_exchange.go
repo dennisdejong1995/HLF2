@@ -25,10 +25,10 @@ func ExchangeUSDT(amount int, receiver string, receiverAddress string, sender st
 	}
 	defer resp.Body.Close()
 
-	fmt.Println("response Status:", resp.Status)
-	fmt.Println("response Headers:", resp.Header)
+	fmt.Printf("response Status: %s", resp.Status)
+	fmt.Printf("response Headers: %s", resp.Header)
 	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println("response Body:", string(body))
+	fmt.Printf("response Body: %s", string(body))
 
 	return "example_hash", nil
 }
