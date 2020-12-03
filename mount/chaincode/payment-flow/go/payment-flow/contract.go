@@ -54,10 +54,8 @@ func (c *Contract) InitiateRepayment(ctx TransactionContextInterface, borrower s
 	}
 
 	// Redeem asset token after exchange back
-	currentTime := time.Now()
-	var redeemDateTime string = currentTime.Format("2006-01-02")
 
-	token, err = RedeemToken(ctx, borrower, token, redeemDateTime)
+	token, err = RedeemToken(ctx, borrower, token)
 	if err != nil {
 		return nil, err
 	}
@@ -67,16 +65,15 @@ func (c *Contract) InitiateRepayment(ctx TransactionContextInterface, borrower s
 // Payment flow functions
 
 func Exchange(ctx TransactionContextInterface, receiver string, sender string, token *AssetToken) (*AssetToken, error) {
-	// TODO: Add atomic swap functionality
-	token, err := ExchangeToken(ctx, receiver, sender, token)
-	if err != nil {
-		return nil, err
-	}
 	token, hash, err := ExchangeCurrency(receiver, sender, token)
 	if err != nil {
 		return nil, err
 	}
 	fmt.Printf("Received hash %s\n", hash)
+	token, err = ExchangeToken(ctx, receiver, sender, token)
+	if err != nil {
+		return nil, err
+	}
 	return token, nil
 }
 
@@ -104,7 +101,9 @@ func IssueToken(ctx TransactionContextInterface, borrower string, tokenID string
 	return &token, nil
 }
 
-func RedeemToken(ctx TransactionContextInterface, borrower string, token *AssetToken, redeemDateTime string) (*AssetToken, error) {
+func RedeemToken(ctx TransactionContextInterface, borrower string, token *AssetToken) (*AssetToken, error) {
+	currentTime := time.Now()
+	var redeemDateTime string = currentTime.Format("2006-01-02")
 
 	if token.Owner != token.Borrower {
 		return nil, fmt.Errorf("Token %s:%s is not owned by %s", token.Borrower, token.TokenID, borrower)
@@ -114,7 +113,6 @@ func RedeemToken(ctx TransactionContextInterface, borrower string, token *AssetT
 		return nil, fmt.Errorf("Token %s:%s is already redeemed", token.Borrower, token.TokenID, borrower)
 	}
 
-	token.Owner = token.Borrower
 	token.RedeemDateTime = redeemDateTime
 	token.SetRedeemed()
 
