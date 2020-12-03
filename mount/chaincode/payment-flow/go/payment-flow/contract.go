@@ -24,21 +24,21 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, assetID stri
 	var issueDateTime string = currentTime.Format("2006-01-02")
 
 	// Issue token under borrower
-	fmt.Printf("Issuing ERC-721 token %s for borrower %s\n", assetID, borrower)
+	fmt.Printf("Issuing asset token %s for borrower %s\n", assetID, borrower)
 	erc721, err := IssueToken(ctx, borrower, assetID, issueDateTime, maturityDateTime, faceValue, currencyID, interest)
 
 	if err != nil {
 		return nil, err
 	} else {
-		fmt.Printf("Succesfully created ERC-721 token %s for borrower %s\n", erc721.TokenID, erc721.Owner)
+		fmt.Printf("Succesfully created asset token %s for borrower %s\n", erc721.TokenID, erc721.Owner)
 	}
 
-	fmt.Printf("Exchanging ERC-721 token %s from borrower %s to investor %s\n", erc721.TokenID, erc721.Owner, lender)
+	fmt.Printf("Exchanging asset token %s from borrower %s to investor %s\n", erc721.TokenID, erc721.Owner, lender)
 	erc721, err = Exchange(ctx, borrower, lender, erc721)
 	if err != nil {
 		return nil, err
 	} else {
-		fmt.Printf("Successfully exchanged ERC-721 token %s from borrower %s to lender %s\n", erc721.TokenID, erc721.Borrower, erc721.Owner)
+		fmt.Printf("Successfully exchanged asset token %s from borrower %s to lender %s\n", erc721.TokenID, erc721.Borrower, erc721.Owner)
 	}
 
 	return erc721, nil
@@ -53,7 +53,7 @@ func (c *Contract) InitiateRepayment(ctx TransactionContextInterface, borrower s
 		return nil, err
 	}
 
-	// Redeem ERC-721 token after exchange back
+	// Redeem asset token after exchange back
 	currentTime := time.Now()
 	var redeemDateTime string = currentTime.Format("2006-01-02")
 
@@ -66,25 +66,25 @@ func (c *Contract) InitiateRepayment(ctx TransactionContextInterface, borrower s
 
 // Payment flow functions
 
-func Exchange(ctx TransactionContextInterface, receiver string, sender string, erc721 *AssetToken) (*AssetToken, error) {
+func Exchange(ctx TransactionContextInterface, receiver string, sender string, token *AssetToken) (*AssetToken, error) {
 	// TODO: Add atomic swap functionality
-	erc721, err := ExchangeToken(ctx, receiver, sender, erc721)
+	token, err := ExchangeToken(ctx, receiver, sender, token)
 	if err != nil {
 		return nil, err
 	}
-	erc721, hash, err := ExchangeCurrency(receiver, sender, erc721)
+	token, hash, err := ExchangeCurrency(receiver, sender, token)
 	if err != nil {
 		return nil, err
 	}
 	fmt.Printf("Received hash %s\n", hash)
-	return erc721, nil
+	return token, nil
 }
 
-// ERC-721 functions
+// AssetToken functions
 
-func IssueToken(ctx TransactionContextInterface, borrower string, tokenID string, issueDateTime string, maturityDateTime string, faceValue int, currency_id int, interest int) (*AssetToken, error) {
+func IssueToken(ctx TransactionContextInterface, borrower string, tokenID string, issueDateTime string, maturityDateTime string, faceValue int, currencyID int, interest int) (*AssetToken, error) {
 	var currency string = ""
-	switch currency_id {
+	switch currencyID {
 	case 0:
 		currency = "USDT"
 	case 1:
@@ -130,7 +130,7 @@ func RedeemToken(ctx TransactionContextInterface, borrower string, token *AssetT
 func ExchangeToken(ctx TransactionContextInterface, currentOwner string, futureOwner string, token *AssetToken) (*AssetToken, error) {
 
 	if token.Owner != currentOwner {
-		return nil, fmt.Errorf("ERC-721 token %s:%s is not owned by %s", token.Borrower, token.TokenID, currentOwner)
+		return nil, fmt.Errorf("Asset token %s:%s is not owned by %s", token.Borrower, token.TokenID, currentOwner)
 	}
 
 	token.Owner = futureOwner
