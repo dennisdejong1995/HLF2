@@ -19,7 +19,7 @@ func (c *Contract) Instantiate() {
 
 }
 
-func (c *Contract) InitiatePayment(ctx TransactionContextInterface, assetID string, borrower string, lender string, maturityDateTime string, faceValue int, currencyID int, interest int) (*ERC721, error) {
+func (c *Contract) InitiatePayment(ctx TransactionContextInterface, assetID string, borrower string, lender string, maturityDateTime string, faceValue int, currencyID int, interest int) (*AssetToken, error) {
 	currentTime := time.Now()
 	var issueDateTime string = currentTime.Format("2006-01-02")
 
@@ -44,7 +44,7 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, assetID stri
 	return erc721, nil
 }
 
-func (c *Contract) InitiateRepayment(ctx TransactionContextInterface, borrower string, lender string, tokenID string) (*ERC721, error) {
+func (c *Contract) InitiateRepayment(ctx TransactionContextInterface, borrower string, lender string, tokenID string) (*AssetToken, error) {
 	token, err := ctx.GetTokenList().GetToken(borrower, tokenID)
 
 	// Exchange token back to borrower for loaned currency
@@ -66,7 +66,7 @@ func (c *Contract) InitiateRepayment(ctx TransactionContextInterface, borrower s
 
 // Payment flow functions
 
-func Exchange(ctx TransactionContextInterface, receiver string, sender string, erc721 *ERC721) (*ERC721, error) {
+func Exchange(ctx TransactionContextInterface, receiver string, sender string, erc721 *AssetToken) (*AssetToken, error) {
 	// TODO: Add atomic swap functionality
 	erc721, err := ExchangeToken(ctx, receiver, sender, erc721)
 	if err != nil {
@@ -82,7 +82,7 @@ func Exchange(ctx TransactionContextInterface, receiver string, sender string, e
 
 // ERC-721 functions
 
-func IssueToken(ctx TransactionContextInterface, borrower string, tokenID string, issueDateTime string, maturityDateTime string, faceValue int, currency_id int, interest int) (*ERC721, error) {
+func IssueToken(ctx TransactionContextInterface, borrower string, tokenID string, issueDateTime string, maturityDateTime string, faceValue int, currency_id int, interest int) (*AssetToken, error) {
 	var currency string = ""
 	switch currency_id {
 	case 0:
@@ -93,7 +93,7 @@ func IssueToken(ctx TransactionContextInterface, borrower string, tokenID string
 		return nil, errors.New("No valid currency selected")
 	}
 
-	token := ERC721{TokenID: tokenID, Borrower: borrower, IssueDateTime: issueDateTime, FaceValue: faceValue, MaturityDateTime: maturityDateTime, Owner: borrower, Currency: currency, Interest: interest}
+	token := AssetToken{TokenID: tokenID, Borrower: borrower, IssueDateTime: issueDateTime, FaceValue: faceValue, MaturityDateTime: maturityDateTime, Owner: borrower, Currency: currency, Interest: interest}
 	token.SetIssued()
 	err := ctx.GetTokenList().AddToken(&token)
 
@@ -104,7 +104,7 @@ func IssueToken(ctx TransactionContextInterface, borrower string, tokenID string
 	return &token, nil
 }
 
-func RedeemToken(ctx TransactionContextInterface, borrower string, token *ERC721, redeemDateTime string) (*ERC721, error) {
+func RedeemToken(ctx TransactionContextInterface, borrower string, token *AssetToken, redeemDateTime string) (*AssetToken, error) {
 
 	if token.Owner != token.Borrower {
 		return nil, fmt.Errorf("Token %s:%s is not owned by %s", token.Borrower, token.TokenID, borrower)
@@ -127,7 +127,7 @@ func RedeemToken(ctx TransactionContextInterface, borrower string, token *ERC721
 	return token, nil
 }
 
-func ExchangeToken(ctx TransactionContextInterface, currentOwner string, futureOwner string, token *ERC721) (*ERC721, error) {
+func ExchangeToken(ctx TransactionContextInterface, currentOwner string, futureOwner string, token *AssetToken) (*AssetToken, error) {
 
 	if token.Owner != currentOwner {
 		return nil, fmt.Errorf("ERC-721 token %s:%s is not owned by %s", token.Borrower, token.TokenID, currentOwner)
@@ -144,7 +144,7 @@ func ExchangeToken(ctx TransactionContextInterface, currentOwner string, futureO
 	return token, nil
 }
 
-func ExchangeCurrency(receiver string, sender string, token *ERC721) (*ERC721, string, error) {
+func ExchangeCurrency(receiver string, sender string, token *AssetToken) (*AssetToken, string, error) {
 	fmt.Printf("Exchanging currency from %s to %s\n", sender, receiver)
 
 	// Determining amount

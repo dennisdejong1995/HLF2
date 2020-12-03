@@ -6,21 +6,21 @@ import ledgerapi "github.com/hyperledger/fabric-samples/commercial-paper/organiz
 // to interact with the world state on behalf
 // of a commercial paper
 type ListInterface interface {
-	AddToken(*ERC721) error
-	GetToken(string, string) (*ERC721, error)
-	UpdateToken(*ERC721) error
+	AddToken(*AssetToken) error
+	GetToken(string, string) (*AssetToken, error)
+	UpdateToken(*AssetToken) error
 }
 
 type list struct {
 	stateList ledgerapi.StateListInterface
 }
 
-func (cpl *list) AddToken(erc721 *ERC721) error {
-	return cpl.stateList.AddState(erc721)
+func (cpl *list) AddToken(token *AssetToken) error {
+	return cpl.stateList.AddState(token)
 }
 
-func (cpl *list) GetToken(borrower string, tokenID string) (*ERC721, error) {
-	cp := new(ERC721)
+func (cpl *list) GetToken(borrower string, tokenID string) (*AssetToken, error) {
+	cp := new(AssetToken)
 
 	err := cpl.stateList.GetState(CreateTokenKey(borrower, tokenID), cp)
 
@@ -31,7 +31,7 @@ func (cpl *list) GetToken(borrower string, tokenID string) (*ERC721, error) {
 	return cp, nil
 }
 
-func (cpl *list) UpdateToken(token *ERC721) error {
+func (cpl *list) UpdateToken(token *AssetToken) error {
 	return cpl.stateList.UpdateState(token)
 }
 
@@ -41,7 +41,7 @@ func newList(ctx TransactionContextInterface) *list {
 	stateList.Ctx = ctx
 	stateList.Name = "org.dealblock.erc721list"
 	stateList.Deserialize = func(bytes []byte, state ledgerapi.StateInterface) error {
-		return Deserialize(bytes, state.(*ERC721))
+		return Deserialize(bytes, state.(*AssetToken))
 	}
 
 	list := new(list)

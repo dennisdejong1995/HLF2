@@ -7,15 +7,15 @@ import (
 	ledgerapi "github.com/hyperledger/fabric-samples/commercial-paper/organization/digibank/contract-go/ledger-api"
 )
 
-// State enum for ERC-721 state property
+// State enum for asset token state property
 type State uint
 
 const (
-	// ISSUED state for when an ERC-721 token is issued
+	// ISSUED state for when an AssetToken token is issued
 	ISSUED State = iota + 1
-	// TRADING state for when an ERC-721 token is trading
+	// TRADING state for when an AssetToken token is trading
 	TRADING
-	// REDEEMED state for when an ERC-721 token has been redeemed
+	// REDEEMED state for when an AssetToken token has been redeemed
 	REDEEMED
 )
 
@@ -29,22 +29,22 @@ func (state State) String() string {
 	return names[state-1]
 }
 
-// CreateTokenKey creates a key for ERC-721 tokens
+// CreateTokenKey creates a key for asset tokens
 func CreateTokenKey(borrower string, tokenID string) string {
 	return ledgerapi.MakeKey(borrower, tokenID)
 }
 
 // Used for managing the fact status is private but want it in world state
-type erc721Alias ERC721
-type jsonERC721 struct {
-	*erc721Alias
+type assetTokenAlias AssetToken
+type jsonAssetToken struct {
+	*assetTokenAlias
 	State State  `json:"currentState"`
 	Class string `json:"class"`
 	Key   string `json:"key"`
 }
 
-// CommercialPaper defines a ERC-721 token
-type ERC721 struct {
+// CommercialPaper defines a AssetToken token
+type AssetToken struct {
 	TokenID          string `json:"tokenID"`
 	Borrower         string `json:"borrower"`
 	IssueDateTime    string `json:"issueDateTime"`
@@ -60,8 +60,8 @@ type ERC721 struct {
 }
 
 // UnmarshalJSON special handler for managing JSON marshalling
-func (cp *ERC721) UnmarshalJSON(data []byte) error {
-	jcp := jsonERC721{erc721Alias: (*erc721Alias)(cp)}
+func (cp *AssetToken) UnmarshalJSON(data []byte) error {
+	jcp := jsonAssetToken{assetTokenAlias: (*assetTokenAlias)(cp)}
 
 	err := json.Unmarshal(data, &jcp)
 
@@ -75,63 +75,63 @@ func (cp *ERC721) UnmarshalJSON(data []byte) error {
 }
 
 // MarshalJSON special handler for managing JSON marshalling
-func (cp ERC721) MarshalJSON() ([]byte, error) {
-	jcp := jsonERC721{erc721Alias: (*erc721Alias)(&cp), State: cp.state, Class: "org.dealblock.erc721", Key: ledgerapi.MakeKey(cp.Borrower, cp.TokenID)}
+func (cp AssetToken) MarshalJSON() ([]byte, error) {
+	jcp := jsonAssetToken{assetTokenAlias: (*assetTokenAlias)(&cp), State: cp.state, Class: "org.dealblock.erc721", Key: ledgerapi.MakeKey(cp.Borrower, cp.TokenID)}
 
 	return json.Marshal(&jcp)
 }
 
 // GetState returns the state
-func (cp *ERC721) GetState() State {
+func (cp *AssetToken) GetState() State {
 	return cp.state
 }
 
 // SetIssued returns the state to issued
-func (cp *ERC721) SetIssued() {
+func (cp *AssetToken) SetIssued() {
 	cp.state = ISSUED
 }
 
 // SetTrading sets the state to trading
-func (cp *ERC721) SetTrading() {
+func (cp *AssetToken) SetTrading() {
 	cp.state = TRADING
 }
 
 // SetRedeemed sets the state to redeemed
-func (cp *ERC721) SetRedeemed() {
+func (cp *AssetToken) SetRedeemed() {
 	cp.state = REDEEMED
 }
 
 // IsIssued returns true if state is issued
-func (cp *ERC721) IsIssued() bool {
+func (cp *AssetToken) IsIssued() bool {
 	return cp.state == ISSUED
 }
 
 // IsTrading returns true if state is trading
-func (cp *ERC721) IsTrading() bool {
+func (cp *AssetToken) IsTrading() bool {
 	return cp.state == TRADING
 }
 
 // IsRedeemed returns true if state is redeemed
-func (cp *ERC721) IsRedeemed() bool {
+func (cp *AssetToken) IsRedeemed() bool {
 	return cp.state == REDEEMED
 }
 
 // GetSplitKey returns values which should be used to form key
-func (cp *ERC721) GetSplitKey() []string {
+func (cp *AssetToken) GetSplitKey() []string {
 	return []string{cp.Borrower, cp.TokenID}
 }
 
-// Serialize formats the ERC-721 token as JSON bytes
-func (cp *ERC721) Serialize() ([]byte, error) {
+// Serialize formats the AssetToken token as JSON bytes
+func (cp *AssetToken) Serialize() ([]byte, error) {
 	return json.Marshal(cp)
 }
 
-// Deserialize formats the ERC-721 token from JSON bytes
-func Deserialize(bytes []byte, cp *ERC721) error {
+// Deserialize formats the AssetToken token from JSON bytes
+func Deserialize(bytes []byte, cp *AssetToken) error {
 	err := json.Unmarshal(bytes, cp)
 
 	if err != nil {
-		return fmt.Errorf("Error deserializing ERC-721 token %s", err.Error())
+		return fmt.Errorf("Error deserializing AssetToken token %s", err.Error())
 	}
 
 	return nil
