@@ -25,23 +25,23 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, assetID stri
 
 	// Issue token under borrower
 	fmt.Printf("Issuing asset token %s for borrower %s\n", assetID, borrower)
-	erc721, err := IssueToken(ctx, borrower, assetID, issueDateTime, maturityDateTime, faceValue, currencyID, interest)
+	token, err := IssueToken(ctx, borrower, assetID, issueDateTime, maturityDateTime, faceValue, currencyID, interest)
 
 	if err != nil {
 		return nil, err
 	} else {
-		fmt.Printf("Succesfully created asset token %s for borrower %s\n", erc721.TokenID, erc721.Owner)
+		fmt.Printf("Succesfully created asset token %s for borrower %s\n", token.TokenID, token.Owner)
 	}
 
-	fmt.Printf("Exchanging asset token %s from borrower %s to investor %s\n", erc721.TokenID, erc721.Owner, lender)
-	erc721, err = Exchange(ctx, borrower, lender, erc721)
+	fmt.Printf("Exchanging asset token %s from borrower %s to investor %s\n", token.TokenID, token.Owner, lender)
+	token, err = Exchange(ctx, borrower, lender, token)
 	if err != nil {
 		return nil, err
 	} else {
-		fmt.Printf("Successfully exchanged asset token %s from borrower %s to lender %s\n", erc721.TokenID, erc721.Borrower, erc721.Owner)
+		fmt.Printf("Successfully exchanged asset token %s from borrower %s to lender %s\n", token.TokenID, token.Borrower, token.Owner)
 	}
 
-	return erc721, nil
+	return token, nil
 }
 
 func (c *Contract) InitiateRepayment(ctx TransactionContextInterface, borrower string, lender string, tokenID string) (*AssetToken, error) {
@@ -130,7 +130,7 @@ func RedeemToken(ctx TransactionContextInterface, borrower string, token *AssetT
 func ExchangeToken(ctx TransactionContextInterface, currentOwner string, futureOwner string, token *AssetToken) (*AssetToken, error) {
 
 	if token.Owner != currentOwner {
-		return nil, fmt.Errorf("Asset token %s:%s is not owned by %s", token.Borrower, token.TokenID, currentOwner)
+		return nil, fmt.Errorf("asset token %s:%s is not owned by %s", token.Borrower, token.TokenID, currentOwner)
 	}
 
 	token.Owner = futureOwner
