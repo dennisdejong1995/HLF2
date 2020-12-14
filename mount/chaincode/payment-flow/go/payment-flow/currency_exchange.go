@@ -7,6 +7,29 @@ import (
 	"net/http"
 )
 
+type CurrencyExchange struct {
+}
+
+func (CurrencyExchange) Exchange(amount int, receiver string, receiverAddress string, sender string, senderAddress string, currency Currency) (string, error) {
+	// Select exchange function for currency type
+	switch currency {
+	case USDT:
+		hash, err := ExchangeUSDT(amount, receiver, receiverAddress, sender, senderAddress)
+		if err != nil {
+			return "", err
+		}
+		return hash, nil
+	case EURS:
+		hash, err := ExchangeEURS(amount, receiver, receiverAddress, sender, senderAddress)
+		if err != nil {
+			return "", err
+		}
+		return hash, nil
+	default:
+		return "", fmt.Errorf("no valid currency chosen for exchange")
+	}
+}
+
 func ExchangeUSDT(amount int, receiver string, receiverAddress string, sender string, senderAddress string) (string, error) {
 	// TODO: Add API connection to Ethereum for exchanging tether
 	fmt.Printf("Exchanging %d in USDT to %s from %s\n", amount, receiver, sender)

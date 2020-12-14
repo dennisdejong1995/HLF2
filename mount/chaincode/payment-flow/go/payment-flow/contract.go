@@ -19,13 +19,13 @@ func (c *Contract) Instantiate() {
 
 }
 
-func (c *Contract) InitiatePayment(ctx TransactionContextInterface, assetID string, borrower string, lender string, maturityDateTime string, faceValue int, currencyID int, interest int) (*AssetToken, error) {
+func (c *Contract) InitiatePayment(ctx TransactionContextInterface, assetID string, borrower string, borrowerAddress string, investor string, investorAddress string, maturityDateTime string, faceValue int, currencyID int, interest int) (*AssetToken, error) {
 	currentTime := time.Now()
 	var issueDateTime string = currentTime.Format("2006-01-02")
 
 	// Issue token under borrower
 	fmt.Printf("Issuing asset token %s for borrower %s\n", assetID, borrower)
-	token, err := IssueToken(ctx, borrower, assetID, issueDateTime, maturityDateTime, faceValue, currencyID, interest)
+	token, err := IssueToken(ctx, borrower, borrowerAddress, investor, investorAddress, assetID, issueDateTime, maturityDateTime, faceValue, currencyID, interest)
 
 	if err != nil {
 		return nil, err
@@ -33,8 +33,8 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, assetID stri
 		fmt.Printf("Succesfully created asset token %s for borrower %s\n", token.TokenID, token.Owner)
 	}
 
-	fmt.Printf("Exchanging asset token %s from borrower %s to investor %s\n", token.TokenID, token.Owner, lender)
-	token, err = Exchange(ctx, borrower, lender, token)
+	fmt.Printf("Exchanging asset token %s from borrower %s to investor %s\n", token.TokenID, token.Owner, investor)
+	token, err = Exchange(ctx, borrower, investor, token.OwnerAddress, token)
 	if err != nil {
 		return nil, err
 	} else {
@@ -46,15 +46,17 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, assetID stri
 
 func (c *Contract) InitiateRepayment(ctx TransactionContextInterface, borrower string, lender string, tokenID string) (*AssetToken, error) {
 	token, err := ctx.GetTokenList().GetToken(borrower, tokenID)
+	if err != nil {
+		return nil, err
+	}
 
 	// Exchange token back to borrower for loaned currency
-	token, err = Exchange(ctx, lender, borrower, token)
+	token, err = Exchange(ctx, lender, borrower, token.BorrowerAddress, token)
 	if err != nil {
 		return nil, err
 	}
 
 	// Redeem asset token after exchange back
-
 	token, err = RedeemToken(ctx, borrower, token)
 	if err != nil {
 		return nil, err
@@ -64,13 +66,15 @@ func (c *Contract) InitiateRepayment(ctx TransactionContextInterface, borrower s
 
 // Payment flow functions
 
-func Exchange(ctx TransactionContextInterface, receiver string, sender string, token *AssetToken) (*AssetToken, error) {
-	token, hash, err := ExchangeCurrency(receiver, sender, token)
+func Exchange(ctx TransactionContextInterface, receiver string, sender string, senderAddress string, token *AssetToken) (*AssetToken, error) {
+
+	hash, err := ExchangeCurrency(receiver, sender, token)
 	if err != nil {
 		return nil, err
 	}
 	fmt.Printf("Received hash %s\n", hash)
-	token, err = ExchangeToken(ctx, receiver, sender, token)
+	token.PaymentHashes = append(token.PaymentHashes, hash)
+	token, err = ExchangeToken(ctx, receiver, sender, senderAddress, token)
 	if err != nil {
 		return nil, err
 	}
@@ -79,19 +83,18 @@ func Exchange(ctx TransactionContextInterface, receiver string, sender string, t
 
 // AssetToken functions
 
-func IssueToken(ctx TransactionContextInterface, borrower string, tokenID string, issueDateTime string, maturityDateTime string, faceValue int, currencyID int, interest int) (*AssetToken, error) {
-	var currency string = ""
+func IssueToken(ctx TransactionContextInterface, borrower string, borrowerAddress string, investor string, investorAddress string, tokenID string, issueDateTime string, maturityDateTime string, faceValue int, currencyID int, interest int) (*AssetToken, error) {
+
+	token := AssetToken{TokenID: tokenID, Borrower: borrower, BorrowerAddress: borrowerAddress, IssueDateTime: issueDateTime, FaceValue: faceValue, MaturityDateTime: maturityDateTime, Owner: borrower, Interest: interest}
+	token.SetIssued()
 	switch currencyID {
 	case 0:
-		currency = "USDT"
+		token.SetUSDT()
 	case 1:
-		currency = "EURS"
+		token.SetEURS()
 	default:
-		return nil, errors.New("No valid currency selected")
+		return nil, errors.New("no valid currency selected")
 	}
-
-	token := AssetToken{TokenID: tokenID, Borrower: borrower, IssueDateTime: issueDateTime, FaceValue: faceValue, MaturityDateTime: maturityDateTime, Owner: borrower, Currency: currency, Interest: interest}
-	token.SetIssued()
 	err := ctx.GetTokenList().AddToken(&token)
 
 	if err != nil {
@@ -106,7 +109,7 @@ func RedeemToken(ctx TransactionContextInterface, borrower string, token *AssetT
 	var redeemDateTime string = currentTime.Format("2006-01-02")
 
 	if token.Owner != token.Borrower {
-		return nil, fmt.Errorf("Token %s:%s is not owned by %s", token.Borrower, token.TokenID, borrower)
+		return nil, fmt.Errorf("asset token %s:%s is not owned by %s", token.Borrower, token.TokenID, borrower)
 	}
 
 	if token.IsRedeemed() {
@@ -125,13 +128,14 @@ func RedeemToken(ctx TransactionContextInterface, borrower string, token *AssetT
 	return token, nil
 }
 
-func ExchangeToken(ctx TransactionContextInterface, currentOwner string, futureOwner string, token *AssetToken) (*AssetToken, error) {
+func ExchangeToken(ctx TransactionContextInterface, currentOwner string, futureOwner string, futureOwnerAddress string, token *AssetToken) (*AssetToken, error) {
 
 	if token.Owner != currentOwner {
 		return nil, fmt.Errorf("asset token %s:%s is not owned by %s", token.Borrower, token.TokenID, currentOwner)
 	}
 
 	token.Owner = futureOwner
+	token.OwnerAddress = futureOwnerAddress
 
 	err := ctx.GetTokenList().UpdateToken(token)
 
@@ -142,36 +146,41 @@ func ExchangeToken(ctx TransactionContextInterface, currentOwner string, futureO
 	return token, nil
 }
 
-func ExchangeCurrency(receiver string, sender string, token *AssetToken) (*AssetToken, string, error) {
+func ExchangeCurrency(receiver string, sender string, token *AssetToken) (string, error) {
 	fmt.Printf("Exchanging currency from %s to %s\n", sender, receiver)
-
-	// Determining amount
-	var amount int = 0
+	// Determining amount and check for valid transaction
+	var receiverAddress = ""
+	var senderAddress = ""
+	var amount = 0
 	switch token.Borrower {
 	case receiver:
-		amount = token.FaceValue
+		if sender == token.Investor {
+			amount = token.FaceValue
+			receiverAddress = token.BorrowerAddress
+			senderAddress = token.InvestorAddress
+		} else {
+			return "", fmt.Errorf("invalid transaction: Sender is not Investor")
+		}
 	case sender:
-		amount = token.FaceValue * (100 + token.Interest) / 100
+		if token.Owner == token.Investor {
+			amount = token.FaceValue * (100 + token.Interest) / 100
+			receiverAddress = token.InvestorAddress
+			senderAddress = token.BorrowerAddress
+		} else if token.Owner == receiver {
+			amount = token.FaceValue * (100 + token.Interest) / 100
+			receiverAddress = token.OwnerAddress
+			senderAddress = token.BorrowerAddress
+		} else {
+			return "", fmt.Errorf("invalid transaction: Receiver is neither Investor nor Owner")
+		}
 	default:
-		return nil, "", fmt.Errorf("Unknown transaction type")
+		return "", fmt.Errorf("invalid transaction: Borrower is neither sender nor receiver")
 	}
 
-	// Select exchange function for currency type
-	switch token.Currency {
-	case "USDT":
-		hash, err := ExchangeUSDT(amount, receiver, "receiver_address", sender, "sender_address")
-		if err != nil {
-			return nil, "", err
-		}
-		return token, hash, nil
-	case "EURS":
-		hash, err := ExchangeEURS(amount, receiver, "receiver_address", sender, "sender_address")
-		if err != nil {
-			return nil, "", err
-		}
-		return token, hash, nil
-	default:
-		return nil, "", fmt.Errorf("%s:%s No valid currency chosen for exchange", token.TokenID, token.Borrower)
-	}
+	hash, err := CurrencyExchange{}.Exchange(amount, receiver, receiverAddress, sender, senderAddress, token.currency)
 
+	if err != nil {
+		return "", err
+	}
+	return hash, nil
 }

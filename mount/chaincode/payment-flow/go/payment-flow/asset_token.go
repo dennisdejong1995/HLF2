@@ -29,6 +29,26 @@ func (state State) String() string {
 	return names[state-1]
 }
 
+// Currency enum for asset token state property
+type Currency uint
+
+const (
+	// USDT currency for when an AssetToken token uses USDT as currency
+	USDT Currency = iota + 1
+	// EURS currency for when an AssetToken token uses EURS as currency
+	EURS
+)
+
+func (cur Currency) String() string {
+	names := []string{"USDT", "EURS"}
+
+	if cur < USDT || cur > EURS {
+		return "UNKNOWN"
+	}
+
+	return names[cur-1]
+}
+
 // CreateTokenKey creates a key for asset tokens
 func CreateTokenKey(borrower string, tokenID string) string {
 	return ledgerapi.MakeKey(borrower, tokenID)
@@ -45,18 +65,23 @@ type jsonAssetToken struct {
 
 // CommercialPaper defines a AssetToken token
 type AssetToken struct {
-	TokenID          string `json:"tokenID"`
-	Borrower         string `json:"borrower"`
-	IssueDateTime    string `json:"issueDateTime"`
-	FaceValue        int    `json:"faceValue"`
-	MaturityDateTime string `json:"maturityDateTime"`
-	RedeemDateTime   string `json:"redeemDateTime"`
-	Owner            string `json:"owner"`
-	Currency         string `json:"currency"`
-	Interest         int    `json:"interest"`
-	state            State  `metadata:"currentState"`
-	class            string `metadata:"class"`
-	key              string `metadata:"key"`
+	TokenID          string   `json:"tokenID"`
+	Borrower         string   `json:"borrower"`
+	Investor         string   `json:"investor"`
+	IssueDateTime    string   `json:"issueDateTime"`
+	FaceValue        int      `json:"faceValue"`
+	MaturityDateTime string   `json:"maturityDateTime"`
+	RedeemDateTime   string   `json:"redeemDateTime"`
+	Owner            string   `json:"owner"`
+	Interest         int      `json:"interest"`
+	BorrowerAddress  string   `json:"senderAddress"`
+	InvestorAddress  string   `json:"investorAddress"`
+	OwnerAddress     string   `json:"receiverAddress"`
+	PaymentHashes    []string `json:"paymentHashes"`
+	currency         Currency `metadata:"currency"`
+	state            State    `metadata:"currentState"`
+	class            string   `metadata:"class"`
+	key              string   `metadata:"key"`
 }
 
 // UnmarshalJSON special handler for managing JSON marshalling
@@ -114,6 +139,31 @@ func (cp *AssetToken) IsTrading() bool {
 // IsRedeemed returns true if state is redeemed
 func (cp *AssetToken) IsRedeemed() bool {
 	return cp.state == REDEEMED
+}
+
+// GetCurrency returns the currency
+func (cp *AssetToken) GetCurrency() Currency {
+	return cp.currency
+}
+
+// SetUSDT sets the currency to USDT
+func (cp *AssetToken) SetUSDT() {
+	cp.currency = USDT
+}
+
+// SetEURS sets the currency to EURS
+func (cp *AssetToken) SetEURS() {
+	cp.currency = EURS
+}
+
+// IsUSDT returns true if currency is USDT
+func (cp *AssetToken) IsUSDT() bool {
+	return cp.currency == USDT
+}
+
+// IsEURS returns true if currency is EURS
+func (cp *AssetToken) IsEURS() bool {
+	return cp.currency == EURS
 }
 
 // GetSplitKey returns values which should be used to form key
