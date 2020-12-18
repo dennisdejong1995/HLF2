@@ -6,8 +6,7 @@ import (
 
 // TransactionContextInterface an interface to
 // describe the minimum required functions for
-// a transaction context in the ERC-721
-// token
+// a transaction context in the AssetToken
 type TransactionContextInterface interface {
 	contractapi.TransactionContextInterface
 	GetTokenList() ListInterface
@@ -15,17 +14,17 @@ type TransactionContextInterface interface {
 
 // TransactionContext implementation of
 // TransactionContextInterface for use with
-// ERC-721 token
+// AssetToken
 type TransactionContext struct {
 	contractapi.TransactionContext
-	paperList *list
+	tokenList *list
 }
 
-// GetTokenList return ERC-721 token list
+// GetTokenList return AssetToken list
 func (tc *TransactionContext) GetTokenList() ListInterface {
-	if tc.paperList == nil {
-		tc.paperList = newList(tc)
+	if tc.tokenList == nil {
+		tc.tokenList = newList(tc)
 	}
 
-	return tc.paperList
+	return tc.tokenList
 }
