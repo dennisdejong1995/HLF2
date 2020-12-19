@@ -10,7 +10,7 @@ import (
 type CurrencyExchange struct {
 }
 
-func (ce *CurrencyExchange) Exchange(amount int, receiver string, receiverAddress string, sender string, senderAddress string, currency Currency) (string, error) {
+func (ce CurrencyExchange) Exchange(amount int, receiver string, receiverAddress string, sender string, senderAddress string, currency Currency) (string, error) {
 	// Select exchange function for currency type
 	switch currency {
 	case USDT:
