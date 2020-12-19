@@ -85,7 +85,7 @@ func Exchange(ctx TransactionContextInterface, receiver string, sender string, s
 
 func IssueToken(ctx TransactionContextInterface, borrower string, borrowerAddress string, investor string, investorAddress string, tokenID string, issueDateTime string, maturityDateTime string, faceValue int, currencyID int, interest int) (*AssetToken, error) {
 
-	token := AssetToken{TokenID: tokenID, Borrower: borrower, BorrowerAddress: borrowerAddress, IssueDateTime: issueDateTime, FaceValue: faceValue, MaturityDateTime: maturityDateTime, Owner: borrower, Interest: interest}
+	token := AssetToken{TokenID: tokenID, Borrower: borrower, BorrowerAddress: borrowerAddress, Investor: investor, InvestorAddress: investorAddress, IssueDateTime: issueDateTime, FaceValue: faceValue, MaturityDateTime: maturityDateTime, Owner: borrower, Interest: interest}
 	token.SetIssued()
 	switch currencyID {
 	case 0:
