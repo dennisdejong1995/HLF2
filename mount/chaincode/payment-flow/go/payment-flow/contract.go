@@ -179,7 +179,7 @@ func ExchangeCurrency(receiver string, sender string, token *AssetToken) (string
 		return "", fmt.Errorf("invalid transaction: Borrower is neither sender nor receiver")
 	}
 
-	hash, err := CurrencyExchange{}.Exchange(amount, receiver, receiverAddress, sender, senderAddress, token.currency)
+	hash, err := CurrencyExchange{}.Exchange(amount, receiver, receiverAddress, sender, senderAddress, token.Currency)
 
 	if err != nil {
 		return "", err

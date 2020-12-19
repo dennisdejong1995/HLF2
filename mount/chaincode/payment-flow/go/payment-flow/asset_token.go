@@ -78,7 +78,7 @@ type AssetToken struct {
 	InvestorAddress  string   `json:"investorAddress"`
 	OwnerAddress     string   `json:"receiverAddress"`
 	PaymentHashes    []string `json:"paymentHashes"`
-	currency         Currency `metadata:"currency"`
+	Currency         Currency `json:"currency"`
 	state            State    `metadata:"currentState"`
 	class            string   `metadata:"class"`
 	key              string   `metadata:"key"`
@@ -143,27 +143,27 @@ func (cp *AssetToken) IsRedeemed() bool {
 
 // GetCurrency returns the currency
 func (cp *AssetToken) GetCurrency() Currency {
-	return cp.currency
+	return cp.Currency
 }
 
 // SetUSDT sets the currency to USDT
 func (cp *AssetToken) SetUSDT() {
-	cp.currency = USDT
+	cp.Currency = USDT
 }
 
 // SetEURS sets the currency to EURS
 func (cp *AssetToken) SetEURS() {
-	cp.currency = EURS
+	cp.Currency = EURS
 }
 
 // IsUSDT returns true if currency is USDT
 func (cp *AssetToken) IsUSDT() bool {
-	return cp.currency == USDT
+	return cp.Currency == USDT
 }
 
 // IsEURS returns true if currency is EURS
 func (cp *AssetToken) IsEURS() bool {
-	return cp.currency == EURS
+	return cp.Currency == EURS
 }
 
 // GetSplitKey returns values which should be used to form key
