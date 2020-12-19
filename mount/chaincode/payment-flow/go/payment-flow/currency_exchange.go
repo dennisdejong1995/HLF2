@@ -37,7 +37,9 @@ func ExchangeUSDT(amount int, receiver string, receiverAddress string, sender st
 	url := "https://ropsten.infura.io/v3/189920b69bd147cbbee96ca2c36e5ea3"
 	fmt.Printf("URL:>%s\n", url)
 
-	var jsonStr = []byte(`{"jsonrpc":"2.0","method":"eth_blockNumber","params": [],"id":1}`)
+	//
+	//`{"jsonrpc":"2.0","method":"eth_blockNumber","params": [],"id":1}`
+	var jsonStr = []byte(`{"jsonrpc":"2.0","method":"eth_call","params": [{"to":"0xa2aa7BE85977168Ec15dAF221f1407b32d5036b9"}],"id":1}`)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 	req.Header.Set("Content-Type", "application/json")
 
