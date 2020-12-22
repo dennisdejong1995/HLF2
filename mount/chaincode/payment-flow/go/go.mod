@@ -4,7 +4,7 @@ go 1.13
 
 require (
 	github.com/btcsuite/btcd v0.21.0-beta // indirect
-	github.com/ethereum/go-ethereum v1.9.25 // indirect
+	github.com/ethereum/go-ethereum v1.9.25
 	github.com/go-openapi/spec v0.19.11 // indirect
 	github.com/go-openapi/swag v0.19.11 // indirect
 	github.com/gobuffalo/envy v1.9.0 // indirect
