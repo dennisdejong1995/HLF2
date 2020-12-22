@@ -2,13 +2,15 @@ package payment_flow
 
 import (
 	"fmt"
-	//token "github.com/dennisdejong1995/HLF2/mount/chaincode/payment-flow/go/contracts_erc20"
-	//"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	//"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common"
+
+	token "github.com/dennisdejong1995/HLF2/mount/chaincode/payment-flow/go/contracts_erc20"
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+
 	"github.com/ethereum/go-ethereum/ethclient"
 	"log"
-	//"math"
-	//"math/big"
+	"math"
+	"math/big"
 )
 
 type CurrencyExchange struct {
@@ -48,44 +50,44 @@ func ExchangeUSDT(amount int, receiver string, receiverAddress string, sender st
 	fmt.Println("we have a connection2")
 	_ = client // we'll use this in the upcoming sections
 
-	//tokenAddress := common.HexToAddress("0xa2aa7BE85977168Ec15dAF221f1407b32d5036b9")
-	//instance, err := token.NewToken(tokenAddress, client)
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//
-	//address := common.HexToAddress("0xada53a094bD017D1Fc0c80Eb19d8DA67dfd477A9")
-	//bal, err := instance.BalanceOf(&bind.CallOpts{}, address)
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//
-	//name, err := instance.Name(&bind.CallOpts{})
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//
-	//symbol, err := instance.Symbol(&bind.CallOpts{})
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//
-	//decimals, err := instance.Decimals(&bind.CallOpts{})
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//
-	//fmt.Printf("name: %s\n", name)         // "name: Golem Network"
-	//fmt.Printf("symbol: %s\n", symbol)     // "symbol: GNT"
-	//fmt.Printf("decimals: %v\n", decimals) // "decimals: 18"
-	//
-	//fmt.Printf("wei: %s\n", bal) // "wei: 74605500647408739782407023"
-	//
-	//fbal := new(big.Float)
-	//fbal.SetString(bal.String())
-	//value := new(big.Float).Quo(fbal, big.NewFloat(math.Pow10(int(decimals))))
-	//
-	//fmt.Printf("balance: %f", value) // "balance: 74605500.647409"
+	tokenAddress := common.HexToAddress("0xa2aa7BE85977168Ec15dAF221f1407b32d5036b9")
+	instance, err := token.NewToken(tokenAddress, client)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	address := common.HexToAddress("0xada53a094bD017D1Fc0c80Eb19d8DA67dfd477A9")
+	bal, err := instance.BalanceOf(&bind.CallOpts{}, address)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	name, err := instance.Name(&bind.CallOpts{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	symbol, err := instance.Symbol(&bind.CallOpts{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	decimals, err := instance.Decimals(&bind.CallOpts{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("name: %s\n", name)         // "name: Golem Network"
+	fmt.Printf("symbol: %s\n", symbol)     // "symbol: GNT"
+	fmt.Printf("decimals: %v\n", decimals) // "decimals: 18"
+
+	fmt.Printf("wei: %s\n", bal) // "wei: 74605500647408739782407023"
+
+	fbal := new(big.Float)
+	fbal.SetString(bal.String())
+	value := new(big.Float).Quo(fbal, big.NewFloat(math.Pow10(int(decimals))))
+
+	fmt.Printf("balance: %f", value) // "balance: 74605500.647409"
 
 	return "success", nil
 }
