@@ -45,7 +45,7 @@ func ExchangeUSDT(amount int, receiver string, receiverAddress string, sender st
 		log.Fatal(err)
 	}
 
-	fmt.Println("we have a connection")
+	fmt.Println("we have a connection2")
 	_ = client // we'll use this in the upcoming sections
 
 	tokenAddress := common.HexToAddress("0xa2aa7BE85977168Ec15dAF221f1407b32d5036b9")
