@@ -1,8 +1,8 @@
 package payment_flow
 
 import (
-	token "../contracts_erc20" // for demo
 	"fmt"
+	token "github.com/dennisdejong1995/HLF2/mount/chaincode/payment-flow/go/contracts_erc20"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
