@@ -18,7 +18,7 @@ pushd "$HLF_PATH"/mount/chaincode/payment-flow/go || exit
 echo "Adding dependencies"
 GO111MODULE=on go mod vendor
 
-sudo cp -r /home/dennis/usb/hidapi/ /srv/test-networks/HLF2/mount/chaincode/payment-flow/go/vendor/github.com/karalabe/usb/
+sudo cp -r /home/dennis/usb/ /srv/test-networks/HLF2/mount/chaincode/payment-flow/go/vendor/github.com/karalabe/
 
 
 popd || exit
