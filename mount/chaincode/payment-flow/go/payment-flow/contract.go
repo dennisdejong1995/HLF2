@@ -148,7 +148,6 @@ func ExchangeToken(ctx TransactionContextInterface, currentOwner string, futureO
 
 func ExchangeCurrency(receiver string, sender string, token *AssetToken) (string, error) {
 	fmt.Printf("Exchanging currency from %s to %s\n", sender, receiver)
-	fmt.Printf("Exchanging currency from %s to %s\n", sender, token.Investor)
 
 	// Determining amount and check for valid transaction
 	var receiverAddress = ""

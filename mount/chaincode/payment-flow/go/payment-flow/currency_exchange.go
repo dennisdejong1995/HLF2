@@ -3,6 +3,8 @@ package payment_flow
 import (
 	"bytes"
 	"fmt"
+	"golang.org/x/crypto/sha3"
+	"hash"
 	"io/ioutil"
 	"net/http"
 )
@@ -14,32 +16,47 @@ func (ce CurrencyExchange) Exchange(amount int, receiver string, receiverAddress
 	// Select exchange function for currency type
 	switch currency {
 	case USDT:
-		hash, err := ExchangeUSDT(amount, receiver, receiverAddress, sender, senderAddress)
+		transHash, err := ExchangeUSDT(amount, receiver, receiverAddress, sender, senderAddress)
 		if err != nil {
 			return "", err
 		}
-		return hash, nil
+		return transHash, nil
 	case EURS:
-		hash, err := ExchangeEURS(amount, receiver, receiverAddress, sender, senderAddress)
+		transHash, err := ExchangeEURS(amount, receiver, receiverAddress, sender, senderAddress)
 		if err != nil {
 			return "", err
 		}
-		return hash, nil
+		return transHash, nil
 	default:
 		return "", fmt.Errorf("no valid currency chosen for exchange")
 	}
+}
+
+type KeccakState interface {
+	hash.Hash
+	Read([]byte) (int, error)
+}
+
+func Keccak256(data ...[]byte) []byte {
+	b := make([]byte, 32)
+	d := sha3.NewLegacyKeccak256().(KeccakState)
+	for _, b := range data {
+		d.Write(b)
+	}
+	d.Read(b)
+	return b
 }
 
 func ExchangeUSDT(amount int, receiver string, receiverAddress string, sender string, senderAddress string) (string, error) {
 	// TODO: Add API connection to Ethereum for exchanging tether
 	fmt.Printf("Exchanging %d in USDT to %s from %s\n", amount, receiver, sender)
 
-	url := "https://ropsten.infura.io/v3/189920b69bd147cbbee96ca2c36e5ea3"
+	url := "https://rinkeby.infura.io/v3/189920b69bd147cbbee96ca2c36e5ea3"
 	fmt.Printf("URL:>%s\n", url)
 
-	//
-	//`{"jsonrpc":"2.0","method":"eth_blockNumber","params": [],"id":1}`
-	var jsonStr = []byte(`{"jsonrpc":"2.0","method":"eth_call","params": [{"to":"0xa2aa7BE85977168Ec15dAF221f1407b32d5036b9"}],"id":1}`)
+	//jsonCall = `{"jsonrpc":"2.0","method":"eth_call","params": [{"to":"0xa2aa7BE85977168Ec15dAF221f1407b32d5036b9"}],"id":1}`
+	jsonCall := `{"jsonrpc":"2.0","method":"eth_blockNumber","params": [],"id":1}`
+	var jsonStr = []byte(jsonCall)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 	req.Header.Set("Content-Type", "application/json")
 
