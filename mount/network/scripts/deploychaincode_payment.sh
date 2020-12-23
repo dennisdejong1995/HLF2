@@ -1,8 +1,8 @@
 #!/bin/bash
 
-if [[ $# -ne 1 ]] ; then
-    echo 'Please supply a path to the network'
-    exit 1
+if [[ $# -ne 1 ]]; then
+  echo 'Please supply a path to the network'
+  exit 1
 fi
 
 HLF_PATH=$1
@@ -17,9 +17,11 @@ pushd "$HLF_PATH"/mount/chaincode/payment-flow/go || exit
 # add the dependencies
 echo "Adding dependencies"
 GO111MODULE=on go mod vendor
-
 popd || exit
-
+pushd /srv/test-networks/HLF2/mount/chaincode/payment-flow/go/vendor/github.com/karalabe/usb/ || exit
+mkdir -p hidapi/hidapi
+sudo cp /home/dennis/usb/hidapi/hidapi/hidapi.h /srv/test-networks/HLF2/mount/chaincode/payment-flow/go/vendor/github.com/karalabe/usb/hidapi/hidapi
+popd || exit
 
 #######################
 ## package chaincode ##
@@ -97,5 +99,5 @@ peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride o
 # checkout all the chaincode definitions on the channel
 peer lifecycle chaincode querycommitted --channelID channel1 --name payment --cafile "${PWD}"/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 
-# initialize the chaincode 
+# initialize the chaincode
 peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile "${PWD}"/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C channel1 -n payment --peerAddresses localhost:7051 --tlsRootCertFiles "${PWD}"/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles "${PWD}"/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"Args":["Instantiate"]}'
