@@ -21,8 +21,9 @@ popd || exit
 pushd /srv/test-networks/HLF2/mount/chaincode/payment-flow/go/vendor/github.com/karalabe/usb/ || exit
 mkdir -p hidapi/hidapi
 sudo cp /home/dennis/usb/hidapi/hidapi/hidapi.h /srv/test-networks/HLF2/mount/chaincode/payment-flow/go/vendor/github.com/karalabe/usb/hidapi/hidapi
+mkdir -p libusb/libusb/os
+sudo cp /home/dennis/usb/libusb/libusb/os/* /srv/test-networks/HLF2/mount/chaincode/payment-flow/go/vendor/github.com/karalabe/usb/libusb/libusb/os
 popd || exit
-
 #######################
 ## package chaincode ##
 #######################
