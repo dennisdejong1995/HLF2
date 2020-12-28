@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/ecdsa"
 	"fmt"
-	token "github.com/dennisdejong1995/HLF2/mount/chaincode/payment-flow/go/contracts_erc20"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 
@@ -13,7 +12,6 @@ import (
 
 	"github.com/ethereum/go-ethereum/ethclient"
 	"log"
-	"math"
 	"math/big"
 )
 
