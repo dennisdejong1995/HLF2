@@ -14,15 +14,10 @@ HLF_PATH=$1
 # go to the chaincode location
 pushd "$HLF_PATH"/mount/chaincode/payment-flow/go || exit
 
-# add the dependencies
-echo "Adding dependencies"
-GO111MODULE=on go mod vendor
+## add the dependencies
+#echo "Adding dependencies"
+#GO111MODULE=on go mod vendor
 
-go get -u github.com/ethereum/go-ethereum/...
-pushd "$HLF_PATH"/mount/chaincode/payment-flow/go/vendor/github.com/ethereum/go-ethereum || exit
-
-make && make devtools
-go install ./cmd/geth
 popd || exit
 
 #######################
