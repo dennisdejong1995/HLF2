@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/ethereum/go-ethereum/common"
 
-	token "github.com/dennisdejong1995/HLF2/mount/chaincode/payment-flow/go/contracts_erc20"
+	token "../contracts_erc20"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 
 	"github.com/ethereum/go-ethereum/ethclient"
