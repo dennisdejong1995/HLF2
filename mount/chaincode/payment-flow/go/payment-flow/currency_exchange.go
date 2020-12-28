@@ -7,7 +7,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 
-	"github.com/dennisdejong1995/HLF2/mount/chaincode/payment-flow/go/contracts_erc20/SUSD"
+	"github.com/dennisdejong1995/HLF2/contracts_erc20/SUSD"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 
 	"github.com/ethereum/go-ethereum/ethclient"
@@ -78,6 +78,7 @@ func ExchangeUSDT(amount int, receiver string, receiverAddress string, sender st
 	fmt.Println(tx.Hash().Hex())
 
 	_ = instance
+	return "success", nil
 }
 
 func ExchangeEURS(amount int, receiver string, receiverAddress string, sender string, senderAddress string) (string, error) {
