@@ -15,6 +15,10 @@ import (
 	"math/big"
 )
 
+const infuraKEY = "189920b69bd147cbbee96ca2c36e5ea3"
+const network = "rinkeby"
+const CONTRACT_ADDRESS = "0x566160489E6548120385Fd5397BEf0E2b608C602"
+
 type CurrencyExchange struct {
 }
 
@@ -42,42 +46,27 @@ func ExchangeUSDT(amount int, receiver string, receiverAddress string, sender st
 	// TODO: Add API connection to Ethereum for exchanging tether
 	fmt.Printf("Exchanging %d in USDT to %s from %s\n", amount, receiver, sender)
 
-	url := "https://rinkeby.infura.io/v3/189920b69bd147cbbee96ca2c36e5ea3"
-
-	client, err := ethclient.Dial(url)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	accounts := genAccounts()
 
-	dealblock := accounts[2]
+	transfer(accounts[2], accounts[0].address, 100)
 
-	nonce, err := client.PendingNonceAt(context.Background(), dealblock.address)
-	if err != nil {
-		log.Fatal(err)
-	}
+	org1_ball := queryBalance(accounts[0])
+	org2_ball := queryBalance(accounts[1])
+	deal_ball := queryBalance(accounts[2])
 
-	gasPrice, err := client.SuggestGasPrice(context.Background())
-	if err != nil {
-		log.Fatal(err)
-	}
+	fmt.Println(org1_ball)
+	fmt.Println(org2_ball)
+	fmt.Println(deal_ball)
 
-	auth := bind.NewKeyedTransactor(dealblock.privateKey)
-	auth.Nonce = big.NewInt(int64(nonce))
-	auth.Value = big.NewInt(0)
-	auth.GasLimit = uint64(3000000)
-	auth.GasPrice = gasPrice
+	org1_allow1 := queryAllowance(accounts[0], accounts[2].address)
+	org2_allow1 := queryAllowance(accounts[1], accounts[2].address)
 
-	address, tx, instance, err := SUSD.DeploySUSD(auth, client)
-	if err != nil {
-		log.Fatal(err)
-	}
+	fmt.Println(org1_allow1)
+	fmt.Println(org2_allow1)
 
-	fmt.Println(address.Hex())
-	fmt.Println(tx.Hash().Hex())
+	aproveAllowance(accounts[0], accounts[2].address, 300)
 
-	_ = instance
+	transferFrom(accounts[2], accounts[0].address, accounts[1].address, 100)
 	return "success", nil
 }
 
@@ -131,4 +120,168 @@ func genAccounts() []Account {
 	accounts = append(accounts, a3)
 
 	return accounts
+}
+
+func deployContract() {
+
+	accounts := genAccounts()
+
+	dealblock := accounts[2]
+
+	client, err := ethclient.Dial("https://" + network + ".infura.io/v3/" + infuraKEY)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	nonce, err := client.PendingNonceAt(context.Background(), dealblock.address)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	gasPrice, err := client.SuggestGasPrice(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	auth := bind.NewKeyedTransactor(dealblock.privateKey)
+	auth.Nonce = big.NewInt(int64(nonce))
+	auth.Value = big.NewInt(0)
+	auth.GasLimit = uint64(3000000)
+	auth.GasPrice = gasPrice
+
+	address, tx, instance, err := SUSD.DeploySUSD(auth, client)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(address.Hex())
+	fmt.Println(tx.Hash().Hex())
+
+	_ = instance
+}
+
+func queryBalance(owner Account) *big.Int {
+	client, err := ethclient.Dial("https://" + network + ".infura.io/v3/" + infuraKEY)
+	if err != nil {
+		log.Fatalf("Failed to connect to the Ethereum network: %v", err)
+	}
+
+	contract, err := SUSD.NewSUSD(common.HexToAddress(CONTRACT_ADDRESS), client)
+	if err != nil {
+		log.Fatalf("Failed to instantiate contract: %v", err)
+	}
+
+	value, _ := contract.BalanceOf(&bind.CallOpts{}, owner.address)
+
+	return value
+
+}
+
+func queryAllowance(owner Account, spender common.Address) *big.Int {
+	client, err := ethclient.Dial("https://" + network + ".infura.io/v3/" + infuraKEY)
+	if err != nil {
+		log.Fatalf("Failed to connect to the Ethereum network: %v", err)
+	}
+
+	contract, err := SUSD.NewSUSD(common.HexToAddress(CONTRACT_ADDRESS), client)
+	if err != nil {
+		log.Fatalf("Failed to instantiate contract: %v", err)
+	}
+
+	value, _ := contract.Allowance(&bind.CallOpts{}, owner.address, spender)
+
+	return value
+
+}
+
+func aproveAllowance(owner Account, spender common.Address, amount int64) {
+	client, err := ethclient.Dial("https://" + network + ".infura.io/v3/" + infuraKEY)
+	if err != nil {
+		log.Fatalf("Failed to connect to the Ethereum network: %v", err)
+	}
+
+	contract, err := SUSD.NewSUSD(common.HexToAddress(CONTRACT_ADDRESS), client)
+	if err != nil {
+		log.Fatalf("Failed to instantiate contract: %v", err)
+	}
+
+	nonce, err := client.PendingNonceAt(context.Background(), owner.address)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	gasPrice, err := client.SuggestGasPrice(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	auth := bind.NewKeyedTransactor(owner.privateKey)
+	auth.Nonce = big.NewInt(int64(nonce))
+	auth.Value = big.NewInt(0)
+	auth.GasLimit = uint64(3000000)
+	auth.GasPrice = gasPrice
+
+	contract.Approve(auth, spender, big.NewInt(amount))
+
+}
+
+func transfer(owner Account, to common.Address, amount int64) {
+	client, err := ethclient.Dial("https://" + network + ".infura.io/v3/" + infuraKEY)
+	if err != nil {
+		log.Fatalf("Failed to connect to the Ethereum network: %v", err)
+	}
+
+	contract, err := SUSD.NewSUSD(common.HexToAddress(CONTRACT_ADDRESS), client)
+	if err != nil {
+		log.Fatalf("Failed to instantiate contract: %v", err)
+	}
+
+	nonce, err := client.PendingNonceAt(context.Background(), owner.address)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	gasPrice, err := client.SuggestGasPrice(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	auth := bind.NewKeyedTransactor(owner.privateKey)
+	auth.Nonce = big.NewInt(int64(nonce))
+	auth.Value = big.NewInt(0)
+	auth.GasLimit = uint64(3000000)
+	auth.GasPrice = gasPrice
+
+	contract.Transfer(auth, to, big.NewInt(amount))
+
+}
+
+func transferFrom(owner Account, from common.Address, to common.Address, amount int64) {
+	client, err := ethclient.Dial("https://" + network + ".infura.io/v3/" + infuraKEY)
+	if err != nil {
+		log.Fatalf("Failed to connect to the Ethereum network: %v", err)
+	}
+
+	contract, err := SUSD.NewSUSD(common.HexToAddress(CONTRACT_ADDRESS), client)
+	if err != nil {
+		log.Fatalf("Failed to instantiate contract: %v", err)
+	}
+
+	nonce, err := client.PendingNonceAt(context.Background(), owner.address)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	gasPrice, err := client.SuggestGasPrice(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	auth := bind.NewKeyedTransactor(owner.privateKey)
+	auth.Nonce = big.NewInt(int64(nonce))
+	auth.Value = big.NewInt(0)
+	auth.GasLimit = uint64(3000000)
+	auth.GasPrice = gasPrice
+
+	contract.TransferFrom(auth, from, to, big.NewInt(amount))
 }
