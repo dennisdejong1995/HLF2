@@ -74,6 +74,7 @@ services:
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7051
       - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_CHAINCODE_BUILDER="dennisdejong/ccenv:latest"
       - CORE_CHAINCODE_GOLANG_RUNTIME="dennisdejong/ccenv:latest"
     volumes:
         - /var/run/:/host/var/run/
@@ -113,6 +114,7 @@ services:
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.example.com:9051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.example.com:9051
       - CORE_PEER_LOCALMSPID=Org2MSP
+      - CORE_CHAINCODE_BUILDER="dennisdejong/ccenv:latest"
       - CORE_CHAINCODE_GOLANG_RUNTIME="dennisdejong/ccenv:latest"
 
     volumes:
