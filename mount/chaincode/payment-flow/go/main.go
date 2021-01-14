@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/dennisdejong1995/HLF2/mount/chaincode/payment-flow/go/payment-flow"
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
+	"gitlab.com/dealblock/payment-package/payment-flow"
 )
 
 func main() {

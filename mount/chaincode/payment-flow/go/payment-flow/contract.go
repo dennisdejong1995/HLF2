@@ -30,7 +30,7 @@ func (c *Contract) InitiatePayment(ctx TransactionContextInterface, assetID stri
 	if err != nil {
 		return nil, err
 	} else {
-		fmt.Printf("Succesfully created asset token %s for borrower %s\n", token.TokenID, token.Owner)
+		fmt.Printf("Successfully created asset token %s for borrower %s\n", token.TokenID, token.Owner)
 	}
 
 	fmt.Printf("Exchanging asset token %s from borrower %s to investor %s\n", token.TokenID, token.Owner, investor)
